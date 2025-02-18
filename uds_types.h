@@ -178,6 +178,16 @@ typedef struct
     uint32_t                                        supportedSubFunc[4]; 
 }UDS_SID_RECORD_t;
 
+typedef struct 
+{
+    uint16_t ID;
+    uint32_t supportedSessions[4];
+    uint32_t supportedSecuritryLevels[2];
+    uint8_t dataLen;
+    uint8_t isSingleBlock;
+    uint8_t isReadOnly;
+    /*TODO: change to bool and add starting address*/ 
+}UDS_DID;
 
 
 #endif
