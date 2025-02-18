@@ -17,9 +17,9 @@ static UDS_Session_t * getSession(uint8_t SessionID,uint8_t activeSessionID)
     }
 }
 //TODO : Generation
-static SID_10_startTimeout(uint16_t t)
+static void SID_10_startTimeout(uint16_t t)
 {
-
+	return;
 }
 UDS_RESPONSE_SUPPRESSION_t SID_10_Handler(UDS_REQ_t * request, UDS_RES_t * response, UDS_Server_t * server)
 {
@@ -36,7 +36,7 @@ UDS_RESPONSE_SUPPRESSION_t SID_10_Handler(UDS_REQ_t * request, UDS_RES_t * respo
     //start timeout
     if(UDS_DEFAULT_SESSION_ID != newSessionPtr->SessionID)
     {
-        SID_10_startTimeout(server->sessionTimeout);
+        START_TIMEOUT_FUNC(server->sessionTimeout);
     }
 
     if(request->data[1] & (1<<7))
@@ -65,5 +65,5 @@ UDS_RESPONSE_SUPPRESSION_t SID_10_Handler(UDS_REQ_t * request, UDS_RES_t * respo
 
 UDS_SubFunctionCheckResult_t SID_10_subFunctionChecks(uint8_t subFunction,UDS_Server_t* server)
 {
-
+    return UDS_SUB_FUNC_E_OK;
 }

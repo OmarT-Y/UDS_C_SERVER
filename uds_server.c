@@ -54,7 +54,7 @@ void UDS_serverInit(void)
 #endif
 }
 
-static UDS_RESPONSE_SUPPRESSION_t UDS_handleRequest(UDS_REQ_t* request,UDS_RES_t * response)
+static UDS_RESPONSE_SUPPRESSION_t  UDS_handleRequest(UDS_REQ_t* request,UDS_RES_t * response)
 {
     //TODO : Handle suppressed responses
     //TODO : How to handle remote requests
@@ -84,7 +84,8 @@ static UDS_RESPONSE_SUPPRESSION_t UDS_handleRequest(UDS_REQ_t* request,UDS_RES_t
     }
     //check if the SID is supported in the
     //TODO : change the == 0 to == STD_NO
-    if(((udsServer.activeSession->supportedService[(sid_record->sid)>>5])&1<<((sid_record->sid)%32))==0)
+
+    if( ( (udsServer.activeSession->supportedService[(sid_record->sid)>>5]) & (1<<((sid_record->sid)%32)) ) == 0 )
     {
         if(UDS_A_TA_FUNCTIONAL==request->trgAddType)
         {
@@ -132,29 +133,18 @@ static UDS_RESPONSE_SUPPRESSION_t UDS_handleRequest(UDS_REQ_t* request,UDS_RES_t
     //chekc if the service has sub function
     if(sid_record->hasSubFunc)
     {
-        //minimum lenght check 
-        if(request->udsDataLen<2)
-        {
-            if(UDS_A_TA_FUNCTIONAL==request->trgAddType)
-            {
-                return UDS_SUPPRESS_RESPONSE;;
-            }
-            //NRC 0x13 (invalid length)
-            handleNRC(request,response,UDS_NRC_0x13_INCORRCT_MESSAGE_LENGTH_OR_INNVALID_FORMAT,request->data[1]);
-            return UDS_NO_SUPPRESS_RESPONSE;
-        }
-        //sub function ever supported check
-        if(((sid_record->supportedSubFunc[(request->data[1])>>5])&1<<((request->data[1])%32))==0)
+        //minimum length check
+        if(request->udsDataLen < 2)
         {
             if(UDS_A_TA_FUNCTIONAL==request->trgAddType)
             {
                 return UDS_SUPPRESS_RESPONSE;
             }
-            //TODO : NRC 0x12 (sub funciton not supported)
-            handleNRC(request,response,UDS_NRC_0x12_SUB_FUNCTION_NOT_SUPPORTED,request->data[1]);
+            //NRC 0x13 (invalid length)
+            handleNRC(request,response,UDS_NRC_0x13_INCORRCT_MESSAGE_LENGTH_OR_INNVALID_FORMAT,request->data[1]);
             return UDS_NO_SUPPRESS_RESPONSE;
         }
-        UDS_SubFunctionCheckResult_t subFunctionCheckResults = sid_record->subfuncChecskPtr(request->data[1],&udsServer);
+        UDS_SubFunctionCheckResult_t subFunctionCheckResults = sid_record->subfuncChecskPtr(request->data[1] & 0x7F,&udsServer);
         if(UDS_SUB_FUNC_E_OK!=subFunctionCheckResults && UDS_A_TA_FUNCTIONAL==request->trgAddType)
         {
             return UDS_SUPPRESS_RESPONSE;
@@ -175,11 +165,22 @@ static UDS_RESPONSE_SUPPRESSION_t UDS_handleRequest(UDS_REQ_t* request,UDS_RES_t
             case UDS_SUB_FUNC_REQUEST_SEQUENCE_FAIL:
                 handleNRC(request,response,UDS_NRC_0x24_REQUEST_SEQUENCE_ERROR,request->data[1]);
                 break;
+            case UDS_SUB_FUNC_NO_SUB_FUNC:
+                if(UDS_A_TA_FUNCTIONAL==request->trgAddType)
+                {
+                    return UDS_SUPPRESS_RESPONSE;
+                }
+                handleNRC(request,response,UDS_NRC_0x12_SUB_FUNCTION_NOT_SUPPORTED,request->data[1]);
+                break;
             default:
                 handleNRC(request,response,UDS_NRC_0x10_GENERAL_REJECT,request->data[1]);
                 break;
-            return UDS_NO_SUPPRESS_RESPONSE;
         }
+        return UDS_NO_SUPPRESS_RESPONSE;
+    }
+    else 
+    {
+        return sid_record->handler(request,response,&udsServer);
     }
 }
 
@@ -200,15 +201,18 @@ void UDS_RequestIndication(UDS_REQ_t* request)
 {
     //TODO : SERVER Busy
     //TODO : How to handle response buffer
-    UDS_RES_t response = 
+    uint8_t responseData[8] = {0};
+    UDS_RES_t response =
     {
         .msgType    = request->msgType,
         .remoteAdd  = request->remoteAdd,
         .srcAdd     = request->srcAdd,
         .trgAdd     = request->trgAdd,
         .udsDataLen = 0,
-        .trgAddType = request->trgAddType
+        .trgAddType = request->trgAddType,
+        .data       = responseData
     };
+
     UDS_handleRequest(request,&response);
     if(UDS_NO_SUPPRESS_RESPONSE==UDS_handleRequest(request,&response))
     {

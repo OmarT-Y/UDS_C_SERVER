@@ -14,6 +14,7 @@
 #include "uds_NR_Handler.h"
 
 #define SID_10_POS_RES_CODE 0x50
+#define START_TIMEOUT_FUNC SID_10_startTimeout
 UDS_RESPONSE_SUPPRESSION_t SID_10_Handler(UDS_REQ_t * request, UDS_RES_t * response, UDS_Server_t * server);
 UDS_SubFunctionCheckResult_t SID_10_subFunctionChecks(uint8_t subFunction,UDS_Server_t* server);
 

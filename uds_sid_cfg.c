@@ -86,7 +86,7 @@ const UDS_SID_RECORD_t Sid_0x31_RountineCtrl_record =
 
 
 
-UDS_SID_RECORD_t* getServiceRecord(uint8_t sid)
+UDS_SID_RECORD_t* UDS_getServiceRecord(uint8_t sid)
 {
     switch(sid)
     {

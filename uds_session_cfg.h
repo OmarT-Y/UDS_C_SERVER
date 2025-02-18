@@ -20,7 +20,7 @@
 #define UDS_DEFAULT_SESSION_ID                              0x1
 #define UDS_DEFAULT_SESSION_P2_SERVER_MAX                   5
 #define UDS_DEFAULT_SESSION_P2_SERVER_START_MAX             5
-#define UDS_DEFAULT_SESSION_SUPPORTED_SID_MASK              5
+#define UDS_DEFAULT_SESSION_SUPPORTED_SID_MASK              {0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff}
 extern UDS_Session_t defaultSession;
 #define UDS_DEFAULT_SESSION_PTR (&defaultSession)
 

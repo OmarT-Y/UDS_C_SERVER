@@ -15,16 +15,16 @@
  * @brief Returns the record of the requested service
  * @param sid The requested Service ID 
  */
-UDS_SID_RECORD_t* getServiceRecord(uint8_t sid);
+UDS_SID_RECORD_t* UDS_getServiceRecord(uint8_t sid);
 
 
 /* Supported Services */
 #define SID_10_DIAG_SESSION_CTRL_ENABLED
 #define SID_3E_TESTER_PRESENT_ENABLED
-#define SID_22_READ_DID_ENABLED
-#define SID_2E_WRITE_DID_ENABLED
-#define SID_27_SECURITY_ACCESS_ENABLED
-#define SID_31_ROUTINE_CTRL_ENABLED
+//#define SID_22_READ_DID_ENABLED
+//#define SID_2E_WRITE_DID_ENABLED
+//#define SID_27_SECURITY_ACCESS_ENABLED
+//#define SID_31_ROUTINE_CTRL_ENABLED
 
 
 //TODO: Change to STD_ON STD_OFF
@@ -38,7 +38,7 @@ UDS_SID_RECORD_t* getServiceRecord(uint8_t sid);
  * @param response The response to be sent back to the UDS client
  * @param server The current UDS server
  */
-void SID_10_Handler(UDS_REQ_t* request,UDS_RES_t * response,UDS_Server_t * server);
+UDS_RESPONSE_SUPPRESSION_t SID_10_Handler(UDS_REQ_t* request,UDS_RES_t * response,UDS_Server_t * server);
 UDS_SubFunctionCheckResult_t SID_10_subFunctionChecks(uint8_t subFunction,UDS_Server_t* server);
 #define SID_10_DIAG_SESSION_CTRL                    0x10
 #define SID_10_DIAG_SESSION_CTRL_MIN_LEN            0x1
@@ -54,11 +54,11 @@ UDS_SubFunctionCheckResult_t SID_10_subFunctionChecks(uint8_t subFunction,UDS_Se
  * @param response The response to be sent back to the UDS client
  * @param server The current UDS server
  */
-void SID_3E_Handler(UDS_REQ_t *request,UDS_RES_t * response,UDS_Server_t * server);
+UDS_RESPONSE_SUPPRESSION_t SID_3E_Handler(UDS_REQ_t *request,UDS_RES_t * response,UDS_Server_t * server);
 UDS_SubFunctionCheckResult_t SID_3E_subFunctionChecks(uint8_t subFunction,UDS_Server_t* server);
 #define SID_3E_TESTER_PRESENT                       0x3E
 #define SID_3E_TESTER_PRESENT_MIN_LEN               0x1
-#define SID_3E_TESTER_PRESENT_HAS_SUB_FUNC          0 /*not sure*/
+#define SID_3E_TESTER_PRESENT_HAS_SUB_FUNC          1 /*not sure*/
 #define SID_3E_TESTER_PRESENT_SUB_FUNC_MASK         9
 #endif
 

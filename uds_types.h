@@ -126,22 +126,29 @@ typedef struct
 #endif
 }UDS_Server_t;
 
+typedef enum{
+    UDS_NO_SUPPRESS_RESPONSE,
+    UDS_SUPPRESS_RESPONSE
+}UDS_RESPONSE_SUPPRESSION_t;
+
 /**
  * @brief UDS_ServiceHandlerPtr_t type (pointer to function)
  */
 typedef UDS_RESPONSE_SUPPRESSION_t (*UDS_ServiceHandlerPtr_t)(UDS_REQ_t *,UDS_RES_t *,UDS_Server_t *);
 
-/**
- *@brief Pointer to function that checks if the sub function is supported in active session
- */
-typedef UDS_SubFunctionCheckResult_t (*UDS_SubFuncChecksPtr_t)(uint8_t,UDS_Server_t *);
 typedef enum
 {
     UDS_SUB_FUNC_E_OK,
     UDS_SUB_FUNC_NO_ACTIVE_SESSION,
     UDS_SUB_FUNC_NO_SECURITY_LEVEL,
-    UDS_SUB_FUNC_REQUEST_SEQUENCE_FAIL
+    UDS_SUB_FUNC_REQUEST_SEQUENCE_FAIL, 
+    UDS_SUB_FUNC_NO_SUB_FUNC
 }UDS_SubFunctionCheckResult_t;
+
+/**
+ *@brief Pointer to function that checks if the sub function is supported in active session
+ */
+typedef UDS_SubFunctionCheckResult_t (*UDS_SubFuncChecksPtr_t)(uint8_t,UDS_Server_t *);
 
 #ifdef UDS_SUPPLIER_CHECK_SUPPORTED
 //TODO: define the type for the supplier check pointer to function
@@ -172,9 +179,5 @@ typedef struct
 }UDS_SID_RECORD_t;
 
 
-typedef enum{
-    UDS_NO_SUPPRESS_RESPONSE,
-    UDS_SUPPRESS_RESPONSE
-}UDS_RESPONSE_SUPPRESSION_t;
 
 #endif
