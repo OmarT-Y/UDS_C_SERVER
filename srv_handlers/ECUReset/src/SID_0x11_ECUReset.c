@@ -37,8 +37,16 @@ UDS_RESPONSE_SUPPRESSION_t SID_11_Handler(UDS_REQ_t * request, UDS_RES_t * respo
         response->udsDataLen = 2U;
         //TODO : check this
         //TODO : add down time?
-        sendResponse(response);
-        resetRecord->resetFunctionPtr();
+        if(1U == UDS_sendResponse(response))
+        {
+            resetRecord->resetFunctionPtr();
+        }
+        else
+        {
+            /*failed to handle request*/
+            handleNRC(request,response,UDS_NRC_0x72_GENERAL_PROGRAMMING_FAILURE,request->data[REQUEST_SID_INDEX]);
+            return UDS_NO_SUPPRESS_RESPONSE;
+        }
     }
     handleNRC(request,response,UDS_NRC_0x72_GENERAL_PROGRAMMING_FAILURE,request->data[REQUEST_SID_INDEX]); /*Should never reach here*/
     return UDS_NO_SUPPRESS_RESPONSE; 

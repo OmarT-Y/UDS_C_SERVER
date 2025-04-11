@@ -41,5 +41,12 @@ void UDS_RequestIndication(UDS_REQ_t* request);
  */
 void UDS_defaultSessionResetCallBack();
 
+/**
+ * @brief This funciton is used to send the response over any communication bus
+ * @brief The function should be implemented in the uds_wrapper to be complient with any need standard (AUTOSAR,openBSW)
+ * @param response The response prepared by the uds server
+ * @return 1/0 = True/False = Success/Fail
+ */
+uint8_t UDS_sendResponse(UDS_RES_t *response);
 
 #endif

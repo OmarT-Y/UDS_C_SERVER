@@ -235,11 +235,6 @@ void UDS_defaultSessionResetCallBack()
     }
 }
 
-void sendResponse(UDS_RES_t* response)
-{
-    /*sync call*/
-}
-
 void UDS_RequestIndication(UDS_REQ_t* request)
 {
     if(UDS_SERVER_QUEUE_MAX_NUMBER_OF_REQS == UDS_readyReqCheck())
@@ -283,14 +278,21 @@ void UDS_mainFunction(void)
        if(NULL != request)
        {
            if(UDS_NO_SUPPRESS_RESPONSE==UDS_handleRequest(request,&response))
-           {
-               
+           {  
                response.srcAdd = UDS_SERVER_FUNCTION_ADDRESS;
                response.trgAdd = request->srcAdd;
                response.msgType = request->msgType;
                response.trgAddType = UDS_A_TA_PHYSICAL;
-               sendResponse(&response);
-               UDS_Request_dequeue();
+               if(1U == sendResponse(&response))
+               {
+                    /*response sent*/
+                    UDS_Request_dequeue();
+               }
+               else
+               {
+                    /*No action needed*/
+                    /*dont dequeue the request*/
+               }
            }
        }
    }
