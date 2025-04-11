@@ -1,0 +1,10 @@
+0x10 Session Control
+0x3E Tester Present
+0x2E Write DID
+0x22 Read DID
+0x31 Routine Control
+0x34 Request Download
+0x37 Request Transfer Exit
+0x27 Security Control
+0x36 Transfer Data
+0x11 ECU Reset

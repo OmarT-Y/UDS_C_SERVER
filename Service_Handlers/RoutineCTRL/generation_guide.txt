@@ -1,0 +1,72 @@
+uds_routine_cfg.h
+    -> Generate the macro: #define UDS_NUM_OF_ROUTINES XU
+    -> For each routine generate the prototypes: /*Routine XXXX Functions*/
+                                uint8_t rid_XXXX_start(uint8_t* data,uint8_t dataLen);
+                                uint8_t rid_XXXX_stop(uint8_t* data,uint8_t dataLen);
+                                UDS_RoutineStatus_t rid_XXXX_checkRes(uint8_t* data,uint8_t dataLen);
+
+
+uds_routine_cfg.c
+    -> For each routine generate 
+        -> the 2 arrays:        static const uint8_t rid_XXXX_sessions[] = {XXXXX};
+                                #ifdef UDS_SECURITY_LEVEL_SUPPORTED 
+                                static const uint8_t rid_XXXX_security[] = {XXXXX};
+                                #endif
+        -> The struct:  static const UDS_SubFunctionSupportivity_t rid_XXXX_supportivity = 
+                        {
+                            .supportedSessions = rid_XXXX_sessions,
+                            .supportedSessionsLen = XU
+                        #ifdef UDS_SECURITY_LEVEL_SUPPORTED
+                            ,
+                            .supportedSecurityLvl = rid_XXXX_security,
+                            .supportedSecurityLvlLen = XU
+                        #endif
+                        };
+
+    -> Generate the array:      UDS_RID_RECORD_t UDS_Routines[UDS_NUM_OF_ROUTINES] =
+                                {
+                                    {
+                                        .rid = 0xXX,
+                                        .optionRecordSize = XU,
+                                        .isRestartable = XU,
+                                        .status = ROUTINE_STATUS_STOPPED,
+                                        .routineStartHandler = rid_XXXX_start,
+                                        .routineStopHandler = rid_XXXX_stop,
+                                        .routineCheckResultsHandler = rid_XXXX_checkRes
+                                    },
+
+                                    {
+                                        .rid = 0xXX,
+                                        .optionRecordSize = XU,
+                                        .isRestartable = XU,
+                                        .status = ROUTINE_STATUS_STOPPED,
+                                        .routineStartHandler = rid_XXXX_start,
+                                        .routineStopHandler = rid_XXXX_stop,
+                                        .routineCheckResultsHandler = rid_XXXX_checkRes
+                                    }
+                                };
+
+
+
+UDS_RID_RECORD_t UDS_Routines[UDS_NUM_OF_ROUTINES] =
+{
+    {
+        .rid = 0x01,
+        .optionRecordSize = 1U,
+        .isRestartable = 0U,
+        .status = ROUTINE_STATUS_STOPPED,
+        .routineStartHandler = rid_0001_start,
+        .routineStopHandler = rid_0001_stop,
+        .routineCheckResultsHandler = rid_0002_checkRes
+    },
+    
+    {
+        .rid = 0x02,
+        .optionRecordSize = 1U,
+        .isRestartable = 0U,
+        .status = ROUTINE_STATUS_STOPPED,
+        .routineStartHandler = rid_0002_start,
+        .routineStopHandler = rid_0002_stop,
+        .routineCheckResultsHandler = rid_0002_checkRes
+    }
+};

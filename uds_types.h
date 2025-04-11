@@ -9,15 +9,24 @@
 #define UDS_TYPES_H
 
 
-//TODO : Change to the platform specific file
-//TODO : include the std boolean type
+/*TODO : Change to the platform specific file
+TODO : include the std boolean type*/
 
 /* Includes */
 #include <inttypes.h>
 #include "uds_server_cfg.h"
 
+#define REQUEST_SID_INDEX                               0U
+#define RESPONSE_SID_INDEX                              0U
+#define REQUEST_SUB_FUNCTION_INDEX                      1U
 
-//TODO : Compiler options to specify minimum enum size
+#define CHECK_REQUEST_SUPPRESS_BIT(request)     (request->data[1] & (1<<7))
+#define CHECK_ARRAY_BIT_OVER_32(array,bitNum)   ((array[(bitNum)>>5]) & (1<<((bitNum)&32))) 
+
+
+
+
+/*TODO : Compiler options to specify minimum enum size*/
 
 /**
  * @brief Identifies the message type/format
@@ -81,7 +90,22 @@ typedef UDS_SDU_t UDS_REQ_t;
  */
 typedef UDS_SDU_t UDS_RES_t;
 
-
+/*
+ * @brief Structure to hold information about the funciton being supported in which session and which security levels
+ * @param supportedSessions Pointer to an array of sessions that support The function to this session
+ * @param supportedSessionsLen Length of the array of sessions 
+ * @param supportedSecurityLvl Pointer to an array of security levels that supports transition to this session
+ * @param supportedSecurityLvlLen Length of the array of security levels
+*/
+typedef struct
+{
+    const uint8_t*            supportedSessions;
+    const uint8_t             supportedSessionsLen;
+#ifdef UDS_SECURITY_LEVEL_SUPPORTED 
+    const uint8_t*            supportedSecurityLvl;
+    const uint8_t             supportedSecurityLvlLen;
+#endif
+}UDS_SubFunctionSupportivity_t;
 /** 
  * @brief UDS session context 
  * @note parameters change according to iso-14229 version
@@ -89,27 +113,51 @@ typedef UDS_SDU_t UDS_RES_t;
  * @param p2_server_max
  * @param p2_server_star_max
  * @param supportedService Flags/mask for Services which are supported in this session
+ * @param SupportivityStruct Structure to hold information about the funciton being supported in which session and which security levels
  */
 typedef struct
 {
-    uint8_t     SessionID;
-    uint16_t    p2_server_max;
-    uint16_t    p2_server_star_max; 
-    uint32_t    supportedService[6];                   
+    uint8_t                             SessionID;
+    uint16_t                            p2_server_max;
+    uint16_t                            p2_server_star_max; 
+    uint32_t                            supportedService[6];
+    UDS_SubFunctionSupportivity_t*      SupportivityStruct;
 }UDS_Session_t;
 
-#ifdef UDS_SECURITY_LEVEL_SUPPORTED
-/** 
- * @brief UDS Security Level context
- * @param SecurityLvlID Security Level ID
- * @param supportedService Flags/mask for Services which are supported by this security level
- */
-typedef struct
-{
-    uint8_t     SecurityLvlID;
-    uint32_t    supportedService[6]; 
-}UDS_SecurityLevel_t;
-#endif
+
+/**
+ * @brief Pointer to the function that generates the security seed
+ * @note Returns pointer to the security seed
+ * @note the function must retain the last generated seed for key check later
+*/
+typedef uint8_t* (*securitySeedFuncPtr)(void);
+/**
+ * @brief Pointer to the function that checks the key
+ * @param key pointer to the key to be checked
+ * @note Returns True/False = Pass/Fail
+*/
+typedef uint8_t (*securityKeyCheckFuncPtr)(const uint8_t* key);
+ /** 
+  * @brief UDS Security Level context
+  * @param SecurityLvlID Security Level ID
+  * @param Status Security level status
+  * @param supportedService Flags/mask for Services which are supported by this security level
+  * @param SupportivityStruct Structure to hold information about the funciton being supported in which session and which security levels
+  * @param seedLen The length of the seed used in the security level
+  * @param keyLen The length of the key used in the security level
+  * @param seedFunc Pointer to the funciton that generates the seed
+  * @param keyCheckFunc pointer to the funciton that checks the key
+  */
+ typedef struct
+ {
+    uint8_t                                         SecurityLvlID;
+    uint32_t                                        supportedService[6];
+    const UDS_SubFunctionSupportivity_t*            SupportivityStruct;
+    uint8_t                                         seedLen;
+    uint8_t                                         keyLen;
+    securitySeedFuncPtr                             seedFunc;
+    securityKeyCheckFuncPtr                         keyCheckFunc;
+ }UDS_SecurityLevel_t;
 
 /** 
  * @brief UDS Server context
@@ -126,6 +174,11 @@ typedef struct
 #endif
 }UDS_Server_t;
 
+/** 
+ * @brief Determines whether the responce will be suppressed or not
+ * @param UDS_NO_SUPPRESS_RESPONSE Response will be sent normally
+ * @param UDS_SUPPRESS_RESPONSE Response will be suppressed
+ */
 typedef enum{
     UDS_NO_SUPPRESS_RESPONSE,
     UDS_SUPPRESS_RESPONSE
@@ -136,29 +189,48 @@ typedef enum{
  */
 typedef UDS_RESPONSE_SUPPRESSION_t (*UDS_ServiceHandlerPtr_t)(UDS_REQ_t *,UDS_RES_t *,UDS_Server_t *);
 
+/**
+ * @brief Determines what SID_XX_getSubFunctSuppStruct returns
+ * @param UDS_SUB_FUNC_E_OK No problem occured 
+ * @param UDS_SUB_FUNC_NO_ACTIVE_SESSION Theres no active session
+ * @param UDS_SUB_FUNC_NO_SECURITY_LEVEL Theres no active security level
+ * @param UDS_SUB_FUNC_REQUEST_SEQUENCE_FAIL The sequence of serving the sub function is not correct
+ * @param UDS_SUB_FUNC_NO_SUB_FUNC Sub function not supported
+ */
 typedef enum
 {
     UDS_SUB_FUNC_E_OK,
     UDS_SUB_FUNC_NO_ACTIVE_SESSION,
-    UDS_SUB_FUNC_NO_SECURITY_LEVEL,
     UDS_SUB_FUNC_REQUEST_SEQUENCE_FAIL, 
     UDS_SUB_FUNC_NO_SUB_FUNC
+#ifdef UDS_SECURITY_LEVEL_SUPPORTED 
+    ,
+    UDS_SUB_FUNC_NO_SECURITY_LEVEL
+#endif
 }UDS_SubFunctionCheckResult_t;
 
-/**
- *@brief Pointer to function that checks if the sub function is supported in active session
- */
-typedef UDS_SubFunctionCheckResult_t (*UDS_SubFuncChecksPtr_t)(uint8_t,UDS_Server_t *);
 
 #ifdef UDS_SUPPLIER_CHECK_SUPPORTED
-//TODO: define the type for the supplier check pointer to function
+/*TODO: define the type for the supplier check pointer to function*/
+/**
+ *@brief Pointer to function that does the supplier specific checks
+ */
 typedef UDS_RESPONSE_SUPPRESSION_t (*UDS_SupplierCheckFuncPtr_t)(UDS_REQ_t *,UDS_RES_t *,UDS_Server_t *);
 #endif
 
 #ifdef UDS_MANUFACTURER_CHECK_SUPPORTED
-//TODO: define the type for the manufacturer check pointer to function
+/*TODO: define the type for the manufacturer check pointer to function*/
+/**
+ * @brief Pointer to function that does the Manufacturer specific checks
+ */
 typedef UDS_RESPONSE_SUPPRESSION_t (*UDS_ManufacCheckFuncPtr_t)(UDS_REQ_t *,UDS_RES_t *,UDS_Server_t *);
 #endif
+
+
+/**
+* @brief Pointer to function that gets the sub function supportivity structure
+*/
+typedef const UDS_SubFunctionSupportivity_t* (*UDS_SubFunctionSuppStructFuncPtr_t)(uint8_t);
 
 /** 
  * @brief UDS SID Record context 
@@ -166,28 +238,18 @@ typedef UDS_RESPONSE_SUPPRESSION_t (*UDS_ManufacCheckFuncPtr_t)(UDS_REQ_t *,UDS_
  * @param minLen Minimum length of Service PDU
  * @param handler Handler for the Service
  * @param hasSubFunc Flag for whether this Service has subfunctions or not
+ * @param subfuncSupportivityStructGet Pointer to function that gets the sub function supportivity structure
  */
+
 typedef struct 
 {
     uint8_t                                         sid;
     uint8_t                                         minLen;
     UDS_ServiceHandlerPtr_t                         handler;
-    //TODO: change to bool habibi
+    /*TODO: change to bool*/
     uint8_t                                         hasSubFunc;
-    UDS_SubFuncChecksPtr_t                          subfuncChecskPtr;
-    uint32_t                                        supportedSubFunc[4]; 
+    UDS_SubFunctionSuppStructFuncPtr_t              subfuncSupportivityStructGet;                                 
 }UDS_SID_RECORD_t;
-
-typedef struct 
-{
-    uint16_t ID;
-    uint32_t supportedSessions[4];
-    uint32_t supportedSecuritryLevels[2];
-    uint8_t dataLen;
-    uint8_t isSingleBlock;
-    uint8_t isReadOnly;
-    /*TODO: change to bool and add starting address*/ 
-}UDS_DID;
 
 
 #endif

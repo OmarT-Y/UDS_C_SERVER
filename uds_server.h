@@ -6,13 +6,21 @@
  ****************************************************************************************************/
 #ifndef UDS_SERVER_H
 #define UDS_SERVER_H
-#include "uds_types.h"
-#include "uds_sid_cfg.h"
-#include "uds_session_cfg.h"
-#include "uds_supplier_manufacturer_cfg.h"
 #include "uds_server_cfg.h"
+#include "uds_types.h"
+#include "uds_session_cfg.h"
+#ifdef UDS_SECURITY_LEVEL_SUPPORTED
 #include "uds_securityLvl_cfg.h"
+#endif
+#include "uds_sid_cfg.h"
+#include "Service_Handlers/SessionCTRL/uds_session_cfg.h"
+#include "uds_supplier_manufacturer_cfg.h"
+#include "Service_Handlers/SecurityAccess/uds_securityLvl_cfg.h"
 #include "uds_NR_Handler.h"
+#include "uds_helpers.h"
+#include "uds_server_q.h"
+
+#include "CanTp.h"
 
 /**
  * @brief Initializes the UDS server
@@ -24,6 +32,7 @@ void UDS_serverInit(void);
 
 /**
  * @brief Handles the request of the UDS client
+ * @param request pointer to the request to be handled by the server
  */
 void UDS_RequestIndication(UDS_REQ_t* request);
 

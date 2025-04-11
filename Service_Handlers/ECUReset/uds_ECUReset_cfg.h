@@ -1,0 +1,30 @@
+/****************************************************************************************************
+ *  File Name           : uds_ECUReset_cfg.h
+ *  Description         : Header file for the UDS ECU Reset Configurations
+ *  Author              : eJad SDV SOTA Graduation Project 2025 Team
+ *  Modification Logs   : 23-2-2025 File Creation
+ ****************************************************************************************************/
+
+
+#ifndef UDS_ECU_RESET_CFG_H
+#define UDS_ECU_RESET_CFG_H
+
+#include "uds_types.h"
+#include "uds_securityLvl_cfg.h"
+#include "uds_session_cfg.h"
+#include "uds_helpers.h"
+#include "SID_0x11_ECUReset_types.h"
+#include "uds_server_cfg.h"
+
+extern const UDS_ResetType_t SupportedResets[];
+
+void sendResponse(UDS_RES_t* response);
+
+/*************************************************************************Start Of Generation*************************************************************************/
+#define UDS_HARD_RESET_ID                                      0x01
+#define UDS_SOFT_RESET_ID                                      0x03
+#define UDS_NUMBER_OF_SUPPORTED_RESETS                         2
+
+/*For each Reset a function prototype should be generated*/
+/*************************************************************************End Of Generation*************************************************************************/
+#endif

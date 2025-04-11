@@ -1,0 +1,70 @@
+->uds_session_cfg.h
+    ->Generate the macro #define UDS_NUMBER_OF_SESSIONS       XX
+    ->Generate the macro #define START_TIMEOUT_FUNC     (the macro should be "SID_10_startTimeout" if a custom implementation is needed)
+                                                        (If there exists a simple OS call with the interface void <FunctionName>(uint16_t t) then the macro should be the funciton itself directly !!!The os must be configured for the reset Session Call Back)
+    -> if custom implementation is needed then generate the prototype : void SID_10_startTimeout(uint16_t t);
+    ->If the programming session is enabled generate the macros:
+                                                    #define UDS_PROGRAMMING_SESSION_ENABLED
+                                                    #define UDS_BOOTLOADER_FLAG_SET_FUNCTION
+                                                    #define UDS_PROGRAMMING_RESET_FUNCTION
+    ->for each session define the macros:   ->
+                                                #define UDS_<SessionName>_SESSION_ID                              0x<XX>
+                                                #define UDS_<SessionName>_SESSION_P2_SERVER_MAX                   XX
+                                                #define UDS_<SessionName>_SESSION_P2_SERVER_START_MAX             XX
+                                                #define UDS_<SessionName>_SESSION_SUPPORTED_SID_MASK              {0xX, 0xX, 0xX, 0xX, 0xX, 0xX}
+
+
+->uds_session_cfg.c
+    ->generate the arrays and struct for each session:
+        static const uint8_t session_<XX>_suppSessions[] = {X, x};
+        #ifdef UDS_SECURITY_LEVEL_SUPPORTED 
+        static const uint8_t session_<XX>_suppSecLvls[] = {1, 2};
+        #endif
+        static const UDS_SubFunctionSupportivity_t session_<XXXX>_supportivity = 
+        {
+            .supportedSessions = session_<XX>_suppSessions,
+            .supportedSessionsLen = XU
+        #ifdef UDS_SECURITY_LEVEL_SUPPORTED
+            ,
+            .supportedSecurityLvl = session_<XX>_suppSecLvls,
+            .supportedSecurityLvlLen = XU
+        #endif
+        };
+    ->generate the array :
+        UDS_Session_t serverSessions
+        {
+            {
+                .SessionID          = UDS_<SessionName>_SESSION_ID,
+                .p2_server_max      = UDS_<SessionName>_SESSION_P2_SERVER_MAX,
+                .p2_server_star_max = UDS_<SessionName>_SESSION_P2_SERVER_START_MAX,
+                .supportedService   = UDS_<SessionName>_SESSION_SUPPORTED_SID_MASK,
+                .SupportivityStruct = &session_<XXXX>_supportivity
+            },
+            {
+                .SessionID          = UDS_<SessionName>_SESSION_ID,
+                .p2_server_max      = UDS_<SessionName>_SESSION_P2_SERVER_MAX,
+                .p2_server_star_max = UDS_<SessionName>_SESSION_P2_SERVER_START_MAX,
+                .supportedService   = UDS_<SessionName>_SESSION_SUPPORTED_SID_MASK,
+                .SupportivityStruct = &session_<XXXX>_supportivity
+            },
+            {
+                .SessionID          = UDS_<SessionName>_SESSION_ID,
+                .p2_server_max      = UDS_<SessionName>_SESSION_P2_SERVER_MAX,
+                .p2_server_star_max = UDS_<SessionName>_SESSION_P2_SERVER_START_MAX,
+                .supportedService   = UDS_<SessionName>_SESSION_SUPPORTED_SID_MASK,
+                .SupportivityStruct = &session_<XXXX>_supportivity
+            },
+            {
+                .SessionID          = UDS_<SessionName>_SESSION_ID,
+                .p2_server_max      = UDS_<SessionName>_SESSION_P2_SERVER_MAX,
+                .p2_server_star_max = UDS_<SessionName>_SESSION_P2_SERVER_START_MAX,
+                .supportedService   = UDS_<SessionName>_SESSION_SUPPORTED_SID_MASK,
+                .SupportivityStruct = &session_<XXXX>_supportivity
+            }
+        };
+    
+    -> if the function START_TIMEOUT_FUNC requires custom implementation generate it if possible
+        void SID_10_startTimeout(uint16_t t)
+        {
+            return;
+        }

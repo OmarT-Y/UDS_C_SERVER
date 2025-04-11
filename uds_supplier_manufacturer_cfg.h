@@ -10,7 +10,9 @@
 #include "uds_server_cfg.h"
 #include "uds_types.h"
 
-//this a test dummy
+/**
+ * @brief Dummy function that runs at the start of check of Manufacturer or Supplier 
+ */
 UDS_RESPONSE_SUPPRESSION_t UDS_Manufac_supplier_dummy(UDS_REQ_t *request,UDS_RES_t * response,UDS_Server_t * server);
 #ifdef UDS_SUPPLIER_CHECK_SUPPORTED
 //#include "supplierCheckFile.h"

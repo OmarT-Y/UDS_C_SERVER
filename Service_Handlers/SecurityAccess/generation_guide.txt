@@ -1,0 +1,50 @@
+uds_securityLvl_cfg.h
+    ->generate the macros:
+                            #define MAX_INVALID_ATTEMPTS                                         XU
+                            #define UDS_NUMBER_OF_SECURITY_LEVELS                                XU
+    ->for each security level generate the macros
+                                            #define SECURITY_LEVEL_0xXX_ID                                       0xXX
+                                            #define SECURITY_LEVEL_0xXX_SUPPORTED_SID_MASK                       {0xXXXXX, 0xXXXXX, 0xXXXXX, 0xXXXXX, 0xXXXXX, 0xXXXXX}
+                                            #define SECURITY_LEVEL_0xXX_SEED_LENGTH                              XU
+                                            #define SECURITY_LEVEL_0xXX_KEY_LENGTH                               XU
+                                            uint8_t* secLvl_0xXX_seedFunc(void);
+                                            uint8_t  secLvl_0xXX_keyCheckFunc(void);
+    ->generate the macros
+                            #define SECURITY_LVL_DEFAULT_ID                                      SECURITY_LEVEL_0xXX_ID
+                            #define SECURITY_LVL_DEFAULT_STRUCT_PTR                              &securityLevels[XU];
+
+
+uds_securityLvl_cfg.c
+    ->for each level generate:
+                        static const uint8_t secLvl_0xXX_suppSessions[] = {X, X};
+                        static const uint8_t secLvl_0xXX_suppSecLvls[] = {X, X};
+                        static const UDS_SubFunctionSupportivity_t secLvl_0x00_supportivity = 
+                        {
+                            .supportedSessions = secLvl_0xXX_suppSessions,
+                            .supportedSessionsLen = XU,
+                            .supportedSecurityLvl = secLvl_0xXX_suppSecLvls,
+                            .supportedSecurityLvlLen = XU
+                        };
+    -> generate the array:
+                        UDS_SecurityLevel_t  securityLevels [UDS_NUMBER_OF_SECURITY_LEVELS] =
+                        {
+                            {
+                                .SecurityLvlID    = SECURITY_LEVEL_0xXX_ID,
+                                .supportedService = SECURITY_LEVEL_0xXX_SUPPORTED_SID_MASK,
+                                .SupportivityStruct = &secLvl_0xXX_supportivity,
+                                .keyLen = SECURITY_LEVEL_0xXX_KEY_LENGTH,
+                                .seedLen = SECURITY_LEVEL_0xXX_SEED_LENGTH,
+                                .seedFunc = secLvl_0xXX_seedFunc,
+                                .keyCheckFunc = secLvl_0xXX_keyCheckFunc
+                            },
+                            {
+                                .SecurityLvlID    = SECURITY_LEVEL_0xXX_ID,
+                                .supportedService = SECURITY_LEVEL_0xXX_SUPPORTED_SID_MASK,
+                                .SupportivityStruct = &secLvl_0xXX_supportivity,
+                                .keyLen = SECURITY_LEVEL_0xXX_KEY_LENGTH,
+                                .seedLen = SECURITY_LEVEL_0xXX_SEED_LENGTH,
+                                .seedFunc = secLvl_0xXX_seedFunc,
+                                .keyCheckFunc = secLvl_0xXX_keyCheckFunc
+                            }
+                        };
+    ->if needed implement the funciton     void UDS_securityAccess_timeout(void (*callBack)(void));       

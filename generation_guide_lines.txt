@@ -1,0 +1,43 @@
+Generated Files:
+
+->uds_sid_cfg.h [This file is to be included in all the source file for all services] [The file has a part which is not generated]
+    ->for each SID that is supported    -> generate the macro "SID_<XX>_<ServiceName>_ENABLED"
+                                        -> generate the macro macro "UDS_NUMBER_OF_SUPPORTED_SERVICES"
+
+                                        -> generate the parameters macro:       
+                                                                                -> SID_<XX>_<ServiceName>                                 0x<XX>
+                                                                                -> SID_<XX>_POS_RES_CODE                                  0x<XX>
+                                                                                -> SID_<XX>_<ServiceName>_MIN_LEN                         0x<XX>
+                                                                                -> SID_<XX>_<ServiceName>_HAS_SUB_FUNC                    0/1
+                                        -> generate the 2 function prototypes:
+                                                                                -> UDS_RESPONSE_SUPPRESSION_t SID_<XX>_Handler(UDS_REQ_t* request,UDS_RES_t * response,UDS_Server_t * server);
+                                                                                -> UDS_SubFunctionCheckResult_t SID_<XX>_getSubFunctSuppStruct(uint8_t subFunction);
+
+
+
+->uds_sid_cfg.c [The entire file generated]
+    -> generate the array [The array must be sorted based in the SID of each service]
+            UDS_SID_RECORD_t UDS_a_supportedSID_Record = 
+            {
+                {
+                    .sid                        = SID_<XX>_<ServiceName>,
+                    .minLen                     = SID_<XX>_<ServiceName>_MIN_LEN,
+                    .handler                    = SID_<XX>_Handler,
+                    .hasSubFunc                 = SID_<XX>_<ServiceName>_HAS_SUB_FUNC,
+                    .numOfSupportedSubFunc      = SID_<XX>_<ServiceName>_NUMBER_OF_SUPPORTED_SUB_FUNC,
+                },
+                {
+                    .sid                        = SID_<XX>_<ServiceName>,
+                    .minLen                     = SID_<XX>_<ServiceName>_MIN_LEN,
+                    .handler                    = SID_<XX>_Handler,
+                    .hasSubFunc                 = SID_<XX>_<ServiceName>_HAS_SUB_FUNC,
+                    .numOfSupportedSubFunc      = SID_<XX>_<ServiceName>_NUMBER_OF_SUPPORTED_SUB_FUNC,
+                },
+                {
+                    .sid                        = SID_<XX>_<ServiceName>,
+                    .minLen                     = SID_<XX>_<ServiceName>_MIN_LEN,
+                    .handler                    = SID_<XX>_Handler,
+                    .hasSubFunc                 = SID_<XX>_<ServiceName>_HAS_SUB_FUNC,
+                    .numOfSupportedSubFunc      = SID_<XX>_<ServiceName>_NUMBER_OF_SUPPORTED_SUB_FUNC,
+                }
+            };

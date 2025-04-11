@@ -1,0 +1,44 @@
+uds_ECUReset_cfg.h:
+    ->for each supported reset generated the macros with the id and short name ->   #define UDS_<ShortName>_RESET_ID                                      0x<XX>
+                                                                                    #define UDS_<ShortName>_RESET_ID                                      0x<XX>
+    ->Define the macro for the number of supported resets ->                        #define UDS_NUMBER_OF_SUPPORTED_RESETS                                  X
+    ->For each reset type generate the prototype: void UDS_RESET_<ShortName>_<0xXX>(void);
+
+
+uds_ECUReset_cfg.c:
+    ->Generate The static arrays:
+                                    static const uint8_t sessions_<RESET_ID>[] = {XXXX};
+                                    #ifdef UDS_SECURITY_LEVEL_SUPPORTED 
+                                    static const uint8_t security_<RESET_ID>[] = {XXXX};
+                                    #endif
+                                    static const uint8_t sessions_<RESET_ID>[] = {XXXX};
+                                    #ifdef UDS_SECURITY_LEVEL_SUPPORTED 
+                                    static const uint8_t security_<RESET_ID>[] = {XXXX};
+                                    #endif
+    -> Generate the struct:
+        static const UDS_SubFunctionSupportivity_t reset_<XXXX>_supportivity = 
+        {
+            .supportedSessions = sessions_<RESET_ID>,
+            .supportedSessionsLen = XU
+        #ifdef UDS_SECURITY_LEVEL_SUPPORTED
+            ,
+            .supportedSecurityLvl = security_<RESET_ID>,
+            .supportedSecurityLvlLen = XU
+        #endif
+        };
+
+    ->Generate The array
+                            const UDS_ResetType_t SupportedResets[UDS_NUMBER_OF_SUPPORTED_RESETS] =
+                            {
+                                {
+                                    .ResetID = UDS_<ShortName>_RESET_ID,
+                                    .resetFunctionPtr = UDS_RESET_<ShortName>_<0xXX>,
+                                    .SupportivityStruct = &reset_<XXXX>_supportivity
+                                },
+
+                                {
+                                    .ResetID = UDS_SOFT_RESET_ID,
+                                    .resetFunctionPtr = UDS_RESET_<ShortName>_<0xXX>,
+                                    .SupportivityStruct = &reset_<XXXX>_supportivity
+                                }
+                            };

@@ -1,0 +1,12 @@
+uds_RequestDownload_cfg.h
+    -> define the macros: 
+                            #define ENCRYPTION_TECHNIQUE_MASK                                   XU
+                            #define COMPRESSION_TECHNIQUE_MASK                                  XU
+                            #define UDS_NUMBER_OF_BYTES_FOR_BLOCK_LENGTH                        XU
+                            #define UDS_MAXIMUM_NUMBER_OF_BLOCK_LENGTH                          XXXULL
+                            #define UDS_MAXIMUM_DOWNLOAD_ADDRESS_BYTES                          XU
+                            #define UDS_MAXIMUM_DOWNLOAD_SIZE_BYTES                             XU
+
+    -> define the macro: #define DOWNLOAD_REQUEST_ADDRESS_AND_SIZE_CHECKS                    checkAddressAndSize
+                        if needed define the prototype for the funciton uint8_t checkAddressAndSize(uint64_t address,uint64_t payloadSize);
+                        The function must be implemented if needed

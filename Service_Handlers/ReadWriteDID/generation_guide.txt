@@ -1,0 +1,48 @@
+->uds_DID_cfg.h
+    -> Generate the following macros:   ->  #define UDS_NUM_OF_DIDS 2
+                                            #define MAX_NUM_OF_READABLE_DIDS_IN_ONE_REQUEST 3
+                                            #define MAX_READ_RESPONSE_LEN 8
+                                            #define MAX_WRITE_REQUEST_LEN 8
+
+    -> For each Read or Write function for the DIDs generate the prototype for the function -> uint8_t DID_<XXXX>_<Read/Write>_Function(uint8_t * data);
+
+
+->uds_DID_cfg.c
+    ->Generate the static arrays:
+        -> static const uint8_t sessions_<XXXX>[] = {XXXX};
+           #ifdef UDS_SECURITY_LEVEL_SUPPORTED 
+        -> static const uint8_t security_<XXXX>[] = {XXXX};
+           #endif
+     -> Generate the struct:
+        static const UDS_SubFunctionSupportivity_t did_<XXXX>_supportivity = 
+        {
+            .supportedSessions = sessions_<XXXX>,
+            .supportedSessionsLen = XU
+        #ifdef UDS_SECURITY_LEVEL_SUPPORTED
+            ,
+            .supportedSecurityLvl = security_<XXXX>,
+            .supportedSecurityLvlLen = XU
+        #endif
+        };
+    ->Generate The array: (The array must be sorted acording to the ID)
+        const UDS_DID_t UDS_DIDS[UDS_NUM_OF_DIDS] =
+        {
+            {
+                .ID = 0x<XXXX>,
+                .dataLen = X,
+                .isSingleBlock = X,
+                .DID_Access = <ACCESS>,
+                .writeDIDptr = DID_<XXXX>_Write_Function,
+                .readDIDptr = DID_<XXXX>_Read_Function,
+                .SupportivityStruct = &did_<XXXX>_supportivity
+            },
+            {
+                .ID = 0x<XXXX>,
+                .dataLen = X,
+                .isSingleBlock = X,
+                .DID_Access = <ACCESS>,
+                .writeDIDptr = DID_<XXXX>_Write_Function,
+                .readDIDptr = DID_<XXXX>_Read_Function,
+                .SupportivityStruct = &did_<XXXX>_supportivity
+            }
+        };
