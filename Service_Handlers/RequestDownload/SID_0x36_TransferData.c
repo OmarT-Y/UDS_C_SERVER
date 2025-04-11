@@ -5,14 +5,14 @@
  *  Modification Logs   : 24-2-2025 File Creation
  ****************************************************************************************************/
 
-#include "uds_DataTransfer_cfg.h"
+#include "../../../UDS/Service_Handlers/RequestDownload/uds_DataTransfer_cfg.h"
 
 static uint8_t downloadData(UDS_REQ_t *request)
 {
     uint8_t i=0;
     for(;i<UDS_TRANSFER_DOWNLOAD_MAX_WRITE_TRY_COUNT;i++)
     {
-        //if(FLASH_OK == parse_data(&request->data[2U],request->udsDataLen-2U))
+        if(FLASH_OK == parse_data(&request->data[2U],request->udsDataLen-2U))
         {
             return 1U;
         }

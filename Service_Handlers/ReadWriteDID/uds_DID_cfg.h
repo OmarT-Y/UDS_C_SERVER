@@ -9,12 +9,13 @@
 #define UDS_DID_CFG_H_
 
 
-#include "uds_DID_types.h"
 #include "uds_types.h"
 #include "uds_securityLvl_cfg.h"
 #include "uds_session_cfg.h"
 #include "uds_sid_cfg.h"
 #include "uds_helpers.h"
+
+#include "../../../UDS/Service_Handlers/ReadWriteDID/uds_DID_types.h"
 /*************************************************************************Start of generation*************************************************************************/
 #define UDS_NUM_OF_DIDS                             2U
 #define MAX_NUM_OF_READABLE_DIDS_IN_ONE_REQUEST     3U

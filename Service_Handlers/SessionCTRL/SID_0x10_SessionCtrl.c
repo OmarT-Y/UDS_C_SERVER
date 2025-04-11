@@ -5,12 +5,12 @@
  *  Modification Logs   : 17-2-2025 File Creation
  ****************************************************************************************************/
 
-#include "uds_session_cfg.h"
+#include "../../../UDS/Service_Handlers/SessionCTRL/uds_session_cfg.h"
 
 
 /*Flag inficating if the boot loader is currently active*/
 #ifdef UDS_PROGRAMMING_SESSION_ENABLED
-#include "UDS_FBL_utils.h"
+#include "UDS_utils.h"
 #define START_SEC_UDS_SEC_DATA
 #include "uds_memMap.h"
 
@@ -49,7 +49,7 @@ static uint8_t UDS_FBL_notifyProgrammingSession(void)
     uint8_t i=0;
     for( ; i<UDS_FBL_MAX_NORIFTY_TRY_COUNT ; i++ )
     {
-        //if(FLASH_OK == modify_flag(PROGRAMMING_SESSION,FLAG_SET))
+        if(FLASH_OK == modify_flag(PROGRAMMING_SESSION,FLAG_SET))
         {
             break;
         }
@@ -62,7 +62,7 @@ static uint8_t UDS_FBL_notifyProgrammingSession(void)
     i = 0;
     for(;i<UDS_FBL_MAX_NORIFTY_TRY_COUNT;i++)
     {
-        //if(FLASH_OK == erase_flashbank())
+        if(FLASH_OK == erase_flashbank())
         {
             break;
         }
@@ -88,13 +88,13 @@ UDS_RESPONSE_SUPPRESSION_t SID_10_Handler(UDS_REQ_t * request, UDS_RES_t * respo
 #ifdef UDS_PROGRAMMING_SESSION_ENABLED
     if(newSession == UDS_PROGRAMMING_SESSION_ID && bootLoaderActiveFlag==0)
     {
-        handleNRC(request,response,UDS_NRC_0x78_REQUEST_CORRECTLY_RECEIVED_RESPONSE_PENDING,request->data[REQUEST_SID_INDEX]);
         if(0U == UDS_FBL_notifyProgrammingSession())
         {
             handleNRC(request,response,UDS_NRC_0x72_GENERAL_PROGRAMMING_FAILURE,request->data[REQUEST_SID_INDEX]);
             return UDS_NO_SUPPRESS_RESPONSE;
         }
-        //TODO:UDS_PROGRAMMING_RESET_FUNCTION();
+		handleNRC(request,response,UDS_NRC_0x78_REQUEST_CORRECTLY_RECEIVED_RESPONSE_PENDING,request->data[REQUEST_SID_INDEX]);
+        //UDS_PROGRAMMING_RESET_FUNCTION(); //TODO: Must be done through another service request??
         return UDS_SUPPRESS_RESPONSE;
     }
 #endif

@@ -83,6 +83,17 @@ UDS_SID_RECORD_t UDS_a_supportedSID_Record[] =
         .subfuncSupportivityStructGet           = NULL
 #endif
     },
+	{
+			.sid                        = SID_34_REQUEST_DOWNLOAD,
+			.minLen                     = SID_34_REQUEST_DOWNLOAD_MIN_LEN,
+			.handler                    = SID_34_Handler,
+			.hasSubFunc                 = SID_34_REQUEST_DOWNLOAD_HAS_SUB_FUNC,
+#if (SID_31_ROUTINE_CTRL_HAS_SUB_FUNC==1)
+			.subfuncSupportivityStructGet           = SID_31_getSubFunctSuppStruct
+#else
+			.subfuncSupportivityStructGet           = NULL
+#endif
+	    },
     {
         .sid                                    = SID_3E_TESTER_PRESENT,
         .minLen                                 = SID_3E_TESTER_PRESENT_MIN_LEN,

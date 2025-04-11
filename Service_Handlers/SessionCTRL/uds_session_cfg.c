@@ -5,7 +5,7 @@
  *  Modification Logs   : 15-2-2025 File Creation
  ****************************************************************************************************/
 
-#include "uds_session_cfg.h"
+#include "../../../UDS/Service_Handlers/SessionCTRL/uds_session_cfg.h"
 
 /**
  * Session Records
@@ -13,7 +13,7 @@
  */
 static const uint8_t session_0x1_suppSessions[] = {1, 2};
 #ifdef UDS_SECURITY_LEVEL_SUPPORTED 
-static const uint8_t session_0x1_suppSecLvls[] = {1, 2};
+static const uint8_t session_0x1_suppSecLvls[] = {0, 1};
 #endif
 static const UDS_SubFunctionSupportivity_t session_0x1_supportivity = 
 {
@@ -28,7 +28,7 @@ static const UDS_SubFunctionSupportivity_t session_0x1_supportivity =
 
 static const uint8_t session_0x2_suppSessions[] = {1, 2};
 #ifdef UDS_SECURITY_LEVEL_SUPPORTED 
-static const uint8_t session_0x2_suppSecLvls[] = {1, 2};
+static const uint8_t session_0x2_suppSecLvls[] = {0, 1};
 #endif
 static const UDS_SubFunctionSupportivity_t session_0x2_supportivity = 
 {
@@ -46,13 +46,15 @@ UDS_Session_t serverSessions [UDS_NUMBER_OF_SESSIONS] =
         .SessionID          = UDS_DEFAULT_SESSION_ID,
         .p2_server_max      = UDS_DEFAULT_SESSION_P2_SERVER_MAX,
         .p2_server_star_max = UDS_DEFAULT_SESSION_P2_SERVER_START_MAX,
-        .supportedService   = UDS_DEFAULT_SESSION_SUPPORTED_SID_MASK
+        .supportedService   = UDS_DEFAULT_SESSION_SUPPORTED_SID_MASK,
+		.SupportivityStruct = &session_0x1_supportivity
     },
     {
         .SessionID          = UDS_PROGRAMMING_SESSION_ID,
         .p2_server_max      = UDS_PROGRAMMING_SESSION_P2_SERVER_MAX,
         .p2_server_star_max = UDS_PROGRAMMING_SESSION_P2_SERVER_START_MAX,
-        .supportedService   = UDS_PROGRAMMING_SESSION_SUPPORTED_SID_MASK
+        .supportedService   = UDS_PROGRAMMING_SESSION_SUPPORTED_SID_MASK,
+		.SupportivityStruct = &session_0x2_supportivity
     }
     /* ,
      {

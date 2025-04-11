@@ -13,8 +13,8 @@
 #include "uds_securityLvl_cfg.h"
 #include "uds_session_cfg.h"
 #include "uds_helpers.h"
-#include "SID_0x11_ECUReset_types.h"
 #include "uds_server_cfg.h"
+#include "../../../UDS/Service_Handlers/ECUReset/SID_0x11_ECUReset_types.h"
 
 extern const UDS_ResetType_t SupportedResets[];
 

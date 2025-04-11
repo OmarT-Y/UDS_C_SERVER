@@ -15,10 +15,10 @@
  */
 static UDS_Server_t udsServer = 
 {
-    .activeSession  = NULL
+    .activeSession  = UDS_DEFAULT_SESSION_PTR
 #ifdef UDS_SECURITY_LEVEL_SUPPORTED
     ,
-    .activeSecLvl   = NULL
+    .activeSecLvl   = SECURITY_LVL_DEFAULT_STRUCT_PTR
 #endif
 };
 
@@ -124,7 +124,7 @@ static UDS_RESPONSE_SUPPRESSION_t  UDS_handleRequest(UDS_REQ_t* request, UDS_RES
         /*negative response 0x11 (service not supported)*/
     }
     /*check if the SID is supported in the active seesion
-    TODO : change the == 0 to == STD_ON*/
+    TODO : change the == 0 to == STD_OFF*/
     if(0 == CHECK_ARRAY_BIT_OVER_32(udsServer.activeSession->supportedService,sid_record->sid))
     {
         if(UDS_A_TA_FUNCTIONAL==request->trgAddType)
@@ -269,31 +269,32 @@ void UDS_RequestIndication(UDS_REQ_t* request)
         }
     }
 }
- void UDS_mainFunction(void)
- {
-    if(UDS_readyReqCheck()>0U)
-    {
-        uint8_t responseData[UDS_MAX_RESPONSE_DATA_LENGTH] = {0U};
-        UDS_RES_t response =
-        {
-            .data       = responseData
-        };
-        UDS_REQ_t* request = UDS_peekNextRequest();
-        if(NULL != request)
-        {
-            if(UDS_NO_SUPPRESS_RESPONSE==UDS_handleRequest(request,&response))
-            {
-                
-                response.srcAdd = UDS_SERVER_FUNCTION_ADDRESS;
-                response.trgAdd = request->srcAdd;
-                response.msgType = request->msgType;
-                response.trgAddType = UDS_A_TA_PHYSICAL;
-                sendResponse(&response);
-                UDS_Request_dequeue();
-            }
-        }
-    }
- }
+
+void UDS_mainFunction(void)
+{
+   if(UDS_readyReqCheck()>0U)
+   {
+       uint8_t responseData[UDS_MAX_RESPONSE_DATA_LENGTH] = {0U};
+       UDS_RES_t response =
+       {
+           .data       = responseData
+       };
+       UDS_REQ_t* request = UDS_peekNextRequest();
+       if(NULL != request)
+       {
+           if(UDS_NO_SUPPRESS_RESPONSE==UDS_handleRequest(request,&response))
+           {
+               
+               response.srcAdd = UDS_SERVER_FUNCTION_ADDRESS;
+               response.trgAdd = request->srcAdd;
+               response.msgType = request->msgType;
+               response.trgAddType = UDS_A_TA_PHYSICAL;
+               sendResponse(&response);
+               UDS_Request_dequeue();
+           }
+       }
+   }
+}
 
 #define STOP_SEC_UDS_SEC_CODE
 #include "uds_memMap.h"

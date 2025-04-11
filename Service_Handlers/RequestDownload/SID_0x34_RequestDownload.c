@@ -4,7 +4,7 @@
  *  Author              : eJad SDV SOTA Graduation Project 2025 Team
  *  Modification Logs   : 24-2-2025 File Creation
  ****************************************************************************************************/
-#include "uds_DataTransfer_cfg.h"
+#include "../../../UDS/Service_Handlers/RequestDownload/uds_DataTransfer_cfg.h"
 
 #define START_SEC_UDS_SEC_DATA
 #include "uds_memMap.h"
@@ -80,7 +80,8 @@ UDS_RESPONSE_SUPPRESSION_t SID_34_Handler(UDS_REQ_t *request,UDS_RES_t * respons
 
     /*Set the address*/
     uint64_t req_address = 0U;
-    for(uint8_t i = 0U ; i < address_ByteCount; i++)
+    uint8_t i;
+    for(i = 0U ; i < address_ByteCount; i++)
     {
         /*TODO:check on endianness*/
         uint8_t nextByte = request->data[i+3U];
@@ -89,7 +90,7 @@ UDS_RESPONSE_SUPPRESSION_t SID_34_Handler(UDS_REQ_t *request,UDS_RES_t * respons
     
     /*Set the payload size*/
     uint64_t req_payloadSize = 0U;
-    for(uint8_t i = 0U ; i < payloadSize_ByteCount; i++)
+    for(i = 0U ; i < payloadSize_ByteCount; i++)
     {
         /*TODO:check on endianness*/
         uint8_t nextByte = request->data[i+3U+address_ByteCount];
@@ -114,10 +115,10 @@ UDS_RESPONSE_SUPPRESSION_t SID_34_Handler(UDS_REQ_t *request,UDS_RES_t * respons
         dataTransferStatus.requestComplete = 0U;
     }
 
-    response->data[RESPONSE_SID_INDEX]=SID_34_POS_RES_CODE;
-    response->data[1U]=((uint8_t)UDS_NUMBER_OF_BYTES_FOR_BLOCK_LENGTH<<4U);
+    response->data[RESPONSE_SID_INDEX] = SID_34_POS_RES_CODE;
+    response->data[1U] = ((uint8_t)UDS_NUMBER_OF_BYTES_FOR_BLOCK_LENGTH<<4U);
     response->udsDataLen = 2U;
-    for(uint8_t i = 0U ; i < UDS_NUMBER_OF_BYTES_FOR_BLOCK_LENGTH ; i++)
+    for(i = 0U ; i < UDS_NUMBER_OF_BYTES_FOR_BLOCK_LENGTH ; i++)
     {
         uint64_t size = UDS_MAXIMUM_NUMBER_OF_BLOCK_LENGTH;
         uint8_t nextByte =(uint8_t)((0xFF) & (size >> (8*(UDS_NUMBER_OF_BYTES_FOR_BLOCK_LENGTH-1U-i))));

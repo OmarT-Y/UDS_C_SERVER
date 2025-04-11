@@ -5,7 +5,7 @@
  *  Modification Logs   : 22-2-2025 File Creation
  ****************************************************************************************************/
 
-#include "uds_routine_cfg.h"
+#include "../../../UDS/Service_Handlers/RoutineCTRL/uds_routine_cfg.h"
 
 #define START_SEC_UDS_SEC_CODE
 #include "uds_memMap.h"

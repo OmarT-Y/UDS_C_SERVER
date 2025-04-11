@@ -6,7 +6,8 @@
  ****************************************************************************************************/
 
 #include "uds_sid_cfg.h"
-#include "uds_DID_cfg.h"
+
+#include "../../../UDS/Service_Handlers/ReadWriteDID/uds_DID_cfg.h"
 
 #define START_SEC_UDS_SEC_DATA
 #include "uds_memMap.h"
@@ -22,6 +23,7 @@ static uint8_t readData[UDS_READ_DID_SINGLE_DID_MAX_LEN];
 /* The read function should add the DID to the response then follow it with the read data, then increase the response length by the amount of data added */
 static void readDID(UDS_DID_t* DID, UDS_RES_t* response)
 {
+	uint8_t i;
     /* TODO : endian check */
     response->data[response->udsDataLen++] = (uint8_t)((DID->ID) >> 8U);
     response->data[response->udsDataLen++] = (uint8_t)((DID->ID) & 0x00FFU);
@@ -38,7 +40,7 @@ static void readDID(UDS_DID_t* DID, UDS_RES_t* response)
             {
                 return;
             }
-            for(int i =0 ; i<DID->dataLen ; i++)
+            for(i =0 ; i<DID->dataLen ; i++)
             {
                 /*TODO : add an extra length check for rets of a user*/
                 response->data[response->udsDataLen++] = readData[i];
@@ -50,6 +52,7 @@ static void readDID(UDS_DID_t* DID, UDS_RES_t* response)
 
 UDS_RESPONSE_SUPPRESSION_t SID_22_Handler(UDS_REQ_t * request, UDS_RES_t * response, UDS_Server_t * server)
 {
+	uint8_t i;
     /*Max and Min length check*/
     if ((request->udsDataLen < 3U) || (request->udsDataLen > 1U + 2U * MAX_NUM_OF_READABLE_DIDS_IN_ONE_REQUEST))
     {
@@ -62,7 +65,7 @@ UDS_RESPONSE_SUPPRESSION_t SID_22_Handler(UDS_REQ_t * request, UDS_RES_t * respo
     
 
     /*Loop over all DIDs*/
-    for (uint8_t i = 0U; i < (((request->udsDataLen) - 1U) / 2U); i++)
+    for (i = 0U; i < (((request->udsDataLen) - 1U) / 2U); i++)
     {
         /*TODO : endian check*/
         uint16_t currentDID = ((request->data[i * 2U + 1U]) << 8U) | (request->data[i * 2U + 2U]);

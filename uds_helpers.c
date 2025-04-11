@@ -69,7 +69,8 @@ void* UDS_ID_Search(const void* searchArray, uint8_t blockSize, uint16_t arrayLe
     const uint8_t* basePtr = (const uint8_t*)searchArray;
     uint32_t arrayMaxInBytes = blockSize * arrayLen;
 
-    for (uint32_t i = 0; i < arrayMaxInBytes; i += blockSize)
+    uint32_t i;
+    for (i = 0; i < arrayMaxInBytes; i += blockSize)
     {
         const void* currentPtr = basePtr + i;
         switch (idLength)

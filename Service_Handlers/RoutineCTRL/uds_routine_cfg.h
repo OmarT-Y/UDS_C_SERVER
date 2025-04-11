@@ -9,8 +9,8 @@
 #define UDS_ROUTINE_CFG_H
 
 #include "uds_sid_cfg.h"
-#include "uds_routines_types.h"
 #include "uds_helpers.h"
+#include "../../../UDS/Service_Handlers/RoutineCTRL/uds_routines_types.h"
 
 /*************************************************************************Start of Generation*************************************************************************/
 #define UDS_NUM_OF_ROUTINES 2U

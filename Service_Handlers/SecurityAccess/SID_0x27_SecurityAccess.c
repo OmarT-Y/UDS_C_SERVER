@@ -6,7 +6,8 @@
  ****************************************************************************************************/
 
 #include "uds_sid_cfg.h"
-#include "uds_securityLvl_cfg.h"
+
+#include "../../../UDS/Service_Handlers/SecurityAccess/uds_securityLvl_cfg.h"
 
 #define START_SEC_UDS_SEC_DATA
 #include "uds_memMap.h"
@@ -84,7 +85,8 @@ UDS_RESPONSE_SUPPRESSION_t SID_27_Handler(UDS_REQ_t * request, UDS_RES_t * respo
             securityLevelStatus.status = SECURITY_LEVEL_SEED_SENT_WAITING_KEY;
             response->data[RESPONSE_SID_INDEX] = SID_27_POS_RES_CODE;
             response->data[REQUEST_SUB_FUNCTION_INDEX] = request->data[REQUEST_SUB_FUNCTION_INDEX];
-            for(uint8_t i =0;i<securityLevelRecord->seedLen;i++)
+            uint8_t i;
+            for(i =0;i<securityLevelRecord->seedLen;i++)
             {
                 response->data[2U+i] = seedPtr[i];
             }

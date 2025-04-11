@@ -47,9 +47,10 @@ static UDS_DataBufferPool_t bufferPool = {0};
  */
 static uint8_t* allocateBuffer(uint16_t size) {
     /*allocate small*/
+	uint8_t i;
     if (size <= UDS_SERVER_QUEUE_DATA_SMALL_BLOCK_SIZE) 
     {
-        for (uint8_t i = 0; i < UDS_SERVER_QUEUE_NUM_OF_SMALL_BLOCKS; i++) 
+        for (i = 0; i < UDS_SERVER_QUEUE_NUM_OF_SMALL_BLOCKS; i++)
         {
             if (0U == bufferPool.smallFree[i]) 
             {
@@ -62,7 +63,7 @@ static uint8_t* allocateBuffer(uint16_t size) {
     /*allocate mid*/
     if (size <= UDS_SERVER_QUEUE_DATA_MEDIUM_BLOCK_SIZE) 
     {
-        for (uint8_t i = 0; i < UDS_SERVER_QUEUE_NUM_OF_MEDIUM_BLOCKS; i++)
+        for (i = 0; i < UDS_SERVER_QUEUE_NUM_OF_MEDIUM_BLOCKS; i++)
         {
             if (0U == bufferPool.mediumFree[i]) 
             {
@@ -75,7 +76,7 @@ static uint8_t* allocateBuffer(uint16_t size) {
     /*allocate large*/
     if (size <= UDS_SERVER_QUEUE_DATA_LARGE_BLOCK_SIZE) 
     {
-        for (uint8_t i = 0; i < UDS_SERVER_QUEUE_NUM_OF_LARGE_BLOCKS; i++) 
+        for (i = 0; i < UDS_SERVER_QUEUE_NUM_OF_LARGE_BLOCKS; i++)
         {
             if (0U == bufferPool.largeFree[i]) 
             {
@@ -93,7 +94,8 @@ static uint8_t* allocateBuffer(uint16_t size) {
  * @param ptr pointer the buffer that should be free'd
  */
 static void freeBuffer(void* ptr) {
-    for (uint8_t i = 0; i < UDS_SERVER_QUEUE_NUM_OF_SMALL_BLOCKS; i++) 
+	uint8_t i;
+    for (i = 0; i < UDS_SERVER_QUEUE_NUM_OF_SMALL_BLOCKS; i++)
     {
         if (bufferPool.smallBuffers[i] == ptr) 
         {
@@ -102,7 +104,7 @@ static void freeBuffer(void* ptr) {
         }
     }
 
-    for (uint8_t i = 0; i < UDS_SERVER_QUEUE_NUM_OF_MEDIUM_BLOCKS; i++) 
+    for (i = 0; i < UDS_SERVER_QUEUE_NUM_OF_MEDIUM_BLOCKS; i++)
     {
         if (bufferPool.mediumBuffers[i] == ptr) 
         {
@@ -111,7 +113,7 @@ static void freeBuffer(void* ptr) {
         }
     }
 
-    for (uint8_t i = 0; i < UDS_SERVER_QUEUE_NUM_OF_LARGE_BLOCKS; i++) 
+    for (i = 0; i < UDS_SERVER_QUEUE_NUM_OF_LARGE_BLOCKS; i++)
     {
         if (bufferPool.largeBuffers[i] == ptr) 
         {
@@ -129,6 +131,7 @@ static void freeBuffer(void* ptr) {
  */
 static uint8_t UDS_req_q_new_entry(UDS_REQ_t* newReq,uint8_t index)
 {
+	uint8_t i;
     uint8_t* dataPtr = allocateBuffer(newReq->udsDataLen);
     if(NULL==dataPtr)
     {
@@ -145,7 +148,7 @@ static uint8_t UDS_req_q_new_entry(UDS_REQ_t* newReq,uint8_t index)
         UDS_requests_Q[index].trgAddType    = newReq->trgAddType;
         UDS_requests_Q[index].udsDataLen    = newReq->udsDataLen;
         UDS_requests_Q[index].data          = dataPtr;
-        for(uint8_t i =0;i<newReq->udsDataLen;i++)
+        for(i =0;i<newReq->udsDataLen;i++)
         {
             dataPtr[i]=newReq->data[i];
         }
@@ -223,5 +226,6 @@ uint8_t UDS_readyReqCheck(void)
 {
     return requestsReady;
 }
+
 #define STOP_SEC_UDS_SEC_CODE
 #include "uds_memMap.h"

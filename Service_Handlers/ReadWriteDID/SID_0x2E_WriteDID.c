@@ -5,7 +5,7 @@
  *  Modification Logs   : 17-2-2025 File Creation
  ****************************************************************************************************/
 
-#include "uds_DID_cfg.h"
+#include "../../../UDS/Service_Handlers/ReadWriteDID/uds_DID_cfg.h"
 
 #define START_SEC_UDS_SEC_CODE
 #include "uds_memMap.h"
