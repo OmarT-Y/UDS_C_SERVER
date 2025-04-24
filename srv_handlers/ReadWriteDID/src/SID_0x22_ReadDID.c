@@ -7,7 +7,7 @@
 
 #include "uds_sid_cfg.h"
 
-#include "../../../UDS/Service_Handlers/ReadWriteDID/uds_DID_cfg.h"
+#include "uds_DID_cfg.h"
 
 #define START_SEC_UDS_SEC_DATA
 #include "uds_memMap.h"

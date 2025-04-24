@@ -6,7 +6,7 @@
  ****************************************************************************************************/
 
 
- #include "../../../UDS/Service_Handlers/RoutineCTRL/uds_routine_cfg.h"
+ #include "uds_routine_cfg.h"
 
  #define START_SEC_UDS_SEC_CONST_DATA
  #include "uds_memMap.h"

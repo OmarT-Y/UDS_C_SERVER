@@ -4,7 +4,7 @@
  *  Author              : eJad SDV SOTA Graduation Project 2025 Team
  *  Modification Logs   : 23-2-2025 File Creation
  ****************************************************************************************************/
-#include "../../../UDS/Service_Handlers/ECUReset/uds_ECUReset_cfg.h"
+#include "uds_ECUReset_cfg.h"
 
 #define START_SEC_UDS_SEC_CONST_DATA
 #include "uds_memMap.h"

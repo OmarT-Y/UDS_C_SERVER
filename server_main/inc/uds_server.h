@@ -13,9 +13,9 @@
 #include "uds_securityLvl_cfg.h"
 #endif
 #include "uds_sid_cfg.h"
-#include "Service_Handlers/SessionCTRL/uds_session_cfg.h"
+#include "uds_session_cfg.h"
 #include "uds_supplier_manufacturer_cfg.h"
-#include "Service_Handlers/SecurityAccess/uds_securityLvl_cfg.h"
+#include "uds_securityLvl_cfg.h"
 #include "uds_NR_Handler.h"
 #include "uds_helpers.h"
 #include "uds_server_q.h"

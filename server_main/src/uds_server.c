@@ -247,7 +247,7 @@ void UDS_RequestIndication(UDS_REQ_t* request)
             .data       = responseData
         };
         handleNRC(request,&response,UDS_NRC_0x21_BUSY_REPEAT_REQUEST,request->data[REQUEST_SID_INDEX]);
-        sendResponse(&response);
+        UDS_sendResponse(&response);
     }
     else
     {
@@ -260,7 +260,7 @@ void UDS_RequestIndication(UDS_REQ_t* request)
                 .data       = responseData
             };
             handleNRC(request,&response,UDS_NRC_0x72_GENERAL_PROGRAMMING_FAILURE,request->data[REQUEST_SID_INDEX]);
-            sendResponse(&response);
+            UDS_sendResponse(&response);
         }
     }
 }
@@ -283,7 +283,7 @@ void UDS_mainFunction(void)
                response.trgAdd = request->srcAdd;
                response.msgType = request->msgType;
                response.trgAddType = UDS_A_TA_PHYSICAL;
-               if(1U == sendResponse(&response))
+               if(1U == UDS_sendResponse(&response))
                {
                     /*response sent*/
                     UDS_Request_dequeue();

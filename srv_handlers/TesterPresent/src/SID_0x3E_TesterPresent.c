@@ -8,7 +8,7 @@
 
 #include "uds_sid_cfg.h"
 
-#include "../../../UDS/Service_Handlers/TesterPresent/SID_0x3E_cfg.h"
+#include "SID_0x3E_cfg.h"
 static void resetTimer(void)
 {
     return;

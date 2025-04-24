@@ -8,7 +8,7 @@
 #ifndef UDS_REQUEST_DOWNLOAD_CFG_H
 #define UDS_REQUEST_DOWNLOAD_CFG_H
 
-#include "../../../UDS/Service_Handlers/RequestDownload/uds_DataTransfer_types.h"
+#include "uds_DataTransfer_types.h"
 
 /*****************************************************Start of Generation*****************************************************/
 /*Mask for which encryption technique is used (requests will raise error if greater than the mask, ie: treated as max)(max is 15)*/

@@ -14,11 +14,11 @@
 #include "uds_session_cfg.h"
 #include "uds_helpers.h"
 #include "uds_server_cfg.h"
-#include "../../../UDS/Service_Handlers/ECUReset/SID_0x11_ECUReset_types.h"
+#include "SID_0x11_ECUReset_types.h"
 
 extern const UDS_ResetType_t SupportedResets[];
 
-void sendResponse(UDS_RES_t* response);
+uint8_t UDS_sendResponse(UDS_RES_t* response);
 
 /*************************************************************************Start Of Generation*************************************************************************/
 #define UDS_HARD_RESET_ID                                      0x01

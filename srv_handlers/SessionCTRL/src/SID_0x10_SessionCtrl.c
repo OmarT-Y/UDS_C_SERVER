@@ -5,7 +5,7 @@
  *  Modification Logs   : 17-2-2025 File Creation
  ****************************************************************************************************/
 
-#include "../../../UDS/Service_Handlers/SessionCTRL/uds_session_cfg.h"
+#include "uds_session_cfg.h"
 
 
 /*Flag inficating if the boot loader is currently active*/

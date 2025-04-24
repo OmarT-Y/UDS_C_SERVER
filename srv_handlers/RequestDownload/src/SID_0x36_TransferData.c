@@ -5,7 +5,7 @@
  *  Modification Logs   : 24-2-2025 File Creation
  ****************************************************************************************************/
 
-#include "../../../UDS/Service_Handlers/RequestDownload/uds_DataTransfer_cfg.h"
+#include "uds_DataTransfer_cfg.h"
 
 static uint8_t downloadData(UDS_REQ_t *request)
 {

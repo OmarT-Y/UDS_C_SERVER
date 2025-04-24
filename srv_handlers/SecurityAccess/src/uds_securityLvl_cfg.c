@@ -5,7 +5,7 @@
  *  Modification Logs   : 16-2-2025 File Creation
  ****************************************************************************************************/
 
-#include "../../../UDS/Service_Handlers/SecurityAccess/uds_securityLvl_cfg.h"
+#include "uds_securityLvl_cfg.h"
 
 
 static const uint8_t secLvl_0x00_suppSessions[] = {1, 2};

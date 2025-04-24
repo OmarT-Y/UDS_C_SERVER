@@ -6,7 +6,7 @@
  ****************************************************************************************************/
 
 
-#include "../../../UDS/Service_Handlers/ECUReset/uds_ECUReset_cfg.h"
+#include "uds_ECUReset_cfg.h"
 
 #define START_SEC_UDS_SEC_CODE
 #include "uds_memMap.h"
