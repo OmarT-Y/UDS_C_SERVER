@@ -14,6 +14,7 @@
 #include "uds_session_cfg.h"
 #include "uds_sid_cfg.h"
 #include "uds_helpers.h"
+#include "UDS_utils.h" 
 
 #include "uds_DID_types.h"
 /*************************************************************************Start of generation*************************************************************************/

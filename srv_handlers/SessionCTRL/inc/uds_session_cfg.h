@@ -46,7 +46,7 @@ void SID_10_startTimeout(uint16_t t);
 
 
 /* Programming Session parameters */
-#define UDS_PROGRAMMING_SESSION_ID                          0x2
+#define UDS_PROGRAMMING_SESSION_ID                          0x1
 #define UDS_PROGRAMMING_SESSION_P2_SERVER_MAX               6
 #define UDS_PROGRAMMING_SESSION_P2_SERVER_START_MAX         6
 #define UDS_PROGRAMMING_SESSION_SUPPORTED_SID_MASK          {0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff}

@@ -21,7 +21,7 @@ TODO : include the std boolean type*/
 #define REQUEST_SUB_FUNCTION_INDEX                      1U
 
 #define CHECK_REQUEST_SUPPRESS_BIT(request)     (request->data[1] & (1<<7))
-#define CHECK_ARRAY_BIT_OVER_32(array,bitNum)   ((array[(bitNum)>>5]) & (1<<((bitNum)&32))) 
+#define CHECK_ARRAY_BIT_OVER_32(array,bitNum)   ((array[(bitNum)>>5]) & (1<<((bitNum%32))))
 
 
 

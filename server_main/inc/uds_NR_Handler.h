@@ -18,7 +18,7 @@
 
 /* All possible NRC */
 #define UDS_NRC_0x10_GENERAL_REJECT                                      0X10U
-#define UDS_NRC_0x11_SERRVICE_NOT_SUPPORTED                              0X11U
+#define UDS_NRC_0x11_SERVICE_NOT_SUPPORTED                              0X11U
 #define UDS_NRC_0x12_SUB_FUNCTION_NOT_SUPPORTED                          0x12U
 #define UDS_NRC_0x13_INCORRCT_MESSAGE_LENGTH_OR_INNVALID_FORMAT          0x13U
 #define UDS_NRC_0x14_RESPONSE_TOO_LONG                                   0x14U

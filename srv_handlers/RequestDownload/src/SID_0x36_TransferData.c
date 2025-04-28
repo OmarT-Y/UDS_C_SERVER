@@ -12,6 +12,7 @@ static uint8_t downloadData(UDS_REQ_t *request)
     uint8_t i=0;
     for(;i<UDS_TRANSFER_DOWNLOAD_MAX_WRITE_TRY_COUNT;i++)
     {
+        //how do you know it's encoded as we expected? (add/copy)
         if(FLASH_OK == parse_data(&request->data[2U],request->udsDataLen-2U))
         {
             return 1U;
@@ -97,7 +98,8 @@ UDS_RESPONSE_SUPPRESSION_t SID_36_Handler(UDS_REQ_t *request,UDS_RES_t * respons
                         }
                     }
                 }
-                
+
+            	//transferResponseParameterRecord?
                 response->data[RESPONSE_SID_INDEX] = SID_36_POS_RES_CODE;
                 response->data[1U] = currentBlockCounter;
                 response->udsDataLen = 2U;
