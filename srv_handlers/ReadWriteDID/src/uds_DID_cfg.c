@@ -13,68 +13,84 @@
  #define START_SEC_UDS_SEC_CONST_DATA
  #include "uds_memMap.h"
  /*************************************************************************End Of Generation*************************************************************************/
- static const uint8_t sessions_0100[] = {0, 1};
+ static const uint8_t sessions_0000[] = {0, 1};
+ 
  #ifdef UDS_SECURITY_LEVEL_SUPPORTED 
- static const uint8_t security_0100[] = {0, 1};
+ static const uint8_t security_0000[] = {0, 1};
  #endif
- static const UDS_SubFunctionSupportivity_t did_0100_supportivity = 
+
+ static const UDS_SubFunctionSupportivity_t did_0000_supportivity = 
  {
-     .supportedSessions = sessions_0100,
+     .supportedSessions = sessions_0000,
      .supportedSessionsLen = 2U
  #ifdef UDS_SECURITY_LEVEL_SUPPORTED
      ,
-     .supportedSecurityLvl = security_0100,
+     .supportedSecurityLvl = security_0000,
      .supportedSecurityLvlLen = 2U
  #endif
  };
- static const uint8_t sessions_0102[] = {0, 1};
+ static const uint8_t sessions_0001[] = {0, 1};
  #ifdef UDS_SECURITY_LEVEL_SUPPORTED 
- static const uint8_t security_0102[] = {0, 1};
+ static const uint8_t security_0001[] = {0, 1};
  #endif
- static const UDS_SubFunctionSupportivity_t did_0102_supportivity = 
+ static const UDS_SubFunctionSupportivity_t did_0001_supportivity = 
  {
-     .supportedSessions = sessions_0102,
+     .supportedSessions = sessions_0001,
      .supportedSessionsLen = 2U
  #ifdef UDS_SECURITY_LEVEL_SUPPORTED
      ,
-     .supportedSecurityLvl = security_0102,
+     .supportedSecurityLvl = security_0001,
      .supportedSecurityLvlLen = 2U
  #endif
  };
  
- uint8_t did_0x0100Read(uint8_t* data)
+ uint8_t did_0x0000Write(uint8_t* data)
  {
-     data[0] = 0xfa;
-     data[1] = 0xde;
-     return 1;
+
+    return 1;
  }
  
- uint8_t did_0x0102Read(uint8_t* data)
+ uint8_t did_0x0001Write(uint8_t* data)
  {
-     data[0] = 0xde;
-     data[1] = 0xfa;
+    uint16_t crc = (data[0] << 8) | data[1];
+    uint32_t app_length = (data[2] << 24) | (data[3] << 16) | (data[4] << 8) | data[5];
+    flash_flashbank_metadata(crc, app_length);
+    return 1;
+ }
+
+ uint8_t did_0x0002Write(uint8_t* data)
+ {
+
+    return 1;
+ }  
+
+ uint8_t did_0x0003Write(uint8_t* data)
+ {
+
      return 1;
  }
  
  const UDS_DID_t UDS_DIDS[UDS_NUM_OF_DIDS] =
  {
      {
-         .ID = 0x0100,
-         .dataLen = 2,
+        /*app B Valid flag*/
+         .ID = 0x0000,
+         .dataLen = 1,
          .isSingleBlock = 1,
-         .DID_Access = READ_ONLY,
-         .writeDIDptr = NULL,
-         .readDIDptr = did_0x0100Read,
-         .SupportivityStruct = &did_0100_supportivity
+         .DID_Access = WRITE_ONLY,
+         .writeDIDptr = did_0x0000Write,
+         .readDIDptr = NULL,
+         .SupportivityStruct = &did_0000_supportivity
      },
      {
-         .ID = 0x0102,
-         .dataLen = 3,
-         .isSingleBlock = 0,
-         .DID_Access = READ_WRITE,
-         .writeDIDptr = NULL,
-         .readDIDptr = did_0x0102Read,
-         .SupportivityStruct = &did_0102_supportivity
+        /*app B Meta Data*/
+         .ID = 0x0001,
+         .dataLen = 6,
+         .isSingleBlock = 1,
+         .DID_Access = WRITE_ONLY,
+         .writeDIDptr = did_0x0001Write,
+         .readDIDptr = NULL,
+         .SupportivityStruct = &did_0001_supportivity
      }
  };
  /*************************************************************************End Of Generation*************************************************************************/

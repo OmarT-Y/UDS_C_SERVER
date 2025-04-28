@@ -20,7 +20,7 @@
 #define UDS_NUMBER_OF_BYTES_FOR_BLOCK_LENGTH                        4U
 
 /*The maximum Block size to be transmitted while downloading*/
-#define UDS_MAXIMUM_NUMBER_OF_BLOCK_LENGTH                          128 + 64 + 32ULL     /*must be multiples of 2*/
+#define UDS_MAXIMUM_NUMBER_OF_BLOCK_LENGTH                         512UL     /*must be multiples of 2*/
 
 #define UDS_TRANSFER_DOWNLOAD_MAX_WRITE_TRY_COUNT            	    5U
 

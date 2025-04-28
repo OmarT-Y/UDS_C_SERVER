@@ -46,6 +46,9 @@ static uint8_t UDS_FBL_notifyProgrammingSession(void)
 {
     /*implementation specific*/
     /*try to set the flag 5 times*/
+	//TODO: duplicate code
+
+	UDS_Utils_ReturnType ret;
     uint8_t i=0;
     for( ; i<UDS_FBL_MAX_NORIFTY_TRY_COUNT ; i++ )
     {
@@ -54,6 +57,15 @@ static uint8_t UDS_FBL_notifyProgrammingSession(void)
             break;
         }
     }
+
+    for( ; i<UDS_FBL_MAX_NORIFTY_TRY_COUNT ; i++ )
+    {
+        if(FLASH_OK == modify_flag(FLASHING_IN_PROGRESS,FLAG_SET))
+        {
+            break;
+        }
+    }
+
     if(UDS_FBL_MAX_NORIFTY_TRY_COUNT <= i)
     {
         /*fail*/
@@ -62,7 +74,8 @@ static uint8_t UDS_FBL_notifyProgrammingSession(void)
     i = 0;
     for(;i<UDS_FBL_MAX_NORIFTY_TRY_COUNT;i++)
     {
-        if(FLASH_OK == erase_flashbank())
+    	ret = erase_flashbank();
+        if(FLASH_OK == ret)
         {
             break;
         }
@@ -86,7 +99,7 @@ UDS_RESPONSE_SUPPRESSION_t SID_10_Handler(UDS_REQ_t * request, UDS_RES_t * respo
         return UDS_NO_SUPPRESS_RESPONSE;
     }
 #ifdef UDS_PROGRAMMING_SESSION_ENABLED
-    if(newSession == UDS_PROGRAMMING_SESSION_ID && bootLoaderActiveFlag==0)
+    if(newSession == UDS_PROGRAMMING_SESSION_ID && bootLoaderActiveFlag == 1) //you sure of this??
     {
         if(0U == UDS_FBL_notifyProgrammingSession())
         {

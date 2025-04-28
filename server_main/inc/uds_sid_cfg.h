@@ -29,7 +29,7 @@ extern UDS_SID_RECORD_t UDS_a_supportedSID_Record[];
 #define SID_34_REQUEST_DOWNLOAD_ENABLED
 #define SID_36_TRANSFER_DATA_ENABLED
 #define SID_37_TRANSFER_REQUEST_EXIT_ENABLED
-#define UDS_NUMBER_OF_SUPPORTED_SERVICES            10
+#define UDS_NUMBER_OF_SUPPORTED_SERVICES            7
 
 /*TODO: Change to STD_ON STD_OFF*/
  
@@ -50,7 +50,7 @@ UDS_RESPONSE_SUPPRESSION_t SID_10_Handler(UDS_REQ_t* request,UDS_RES_t * respons
  */
 const UDS_SubFunctionSupportivity_t* SID_10_getSubFunctSuppStruct(uint8_t subFunction);
 #define SID_10_DIAG_SESSION_CTRL                                0x10
-#define SID_10_POS_RES_CODE                                     0x40
+#define SID_10_POS_RES_CODE                                     0x50
 #define SID_10_DIAG_SESSION_CTRL_MIN_LEN                        0x2
 #define SID_10_DIAG_SESSION_CTRL_HAS_SUB_FUNC                   1
 #define SID_10_DIAG_SESSION_CTRL_NUMBER_OF_SUPPORTED_SUB_FUNC   0x0
@@ -206,6 +206,12 @@ UDS_RESPONSE_SUPPRESSION_t SID_34_Handler(UDS_REQ_t *request,UDS_RES_t * respons
 
 /* Service parameters for SID 0x34 */
 #ifdef SID_36_TRANSFER_DATA_ENABLED
+
+#define SID_36_TRANSFER_DATA									0x36
+#define SID_36_POS_RES_CODE                                     0x76
+#define SID_36_TRANSFER_DATA_HAS_SUB_FUNC    					0
+#define SID_36_TRANSFER_DATA_MIN_LEN							3 
+
 /**
  * @brief Handler for Request Download Service - SID 0x36
  * @param request Incoming UDS Request

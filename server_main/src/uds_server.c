@@ -112,6 +112,7 @@ static UDS_RESPONSE_SUPPRESSION_t  UDS_handleRequest(UDS_REQ_t* request, UDS_RES
     }
 #endif
     /*Check if the SID is supported*/
+    //TODO: why pass UDS_NUMBER_OF_SUPPORTED_SERVICES where you could deduce it from the array size
     UDS_SID_RECORD_t* sid_record = (UDS_SID_RECORD_t*)UDS_BinaryID_Search(UDS_a_supportedSID_Record,sizeof(UDS_SID_RECORD_t),UDS_NUMBER_OF_SUPPORTED_SERVICES,&(request->data[0]),1);
     if(NULL==sid_record)
     {
@@ -119,7 +120,7 @@ static UDS_RESPONSE_SUPPRESSION_t  UDS_handleRequest(UDS_REQ_t* request, UDS_RES
         {
             return UDS_SUPPRESS_RESPONSE;
         }
-        handleNRC(request,response,UDS_NRC_0x11_SERRVICE_NOT_SUPPORTED,request->data[REQUEST_SID_INDEX]);
+        handleNRC(request,response,UDS_NRC_0x11_SERVICE_NOT_SUPPORTED,request->data[REQUEST_SID_INDEX]);
         return UDS_NO_SUPPRESS_RESPONSE;
         /*negative response 0x11 (service not supported)*/
     }
@@ -293,6 +294,10 @@ void UDS_mainFunction(void)
                     /*No action needed*/
                     /*dont dequeue the request*/
                }
+           }
+           else
+           {
+        	   UDS_Request_dequeue();
            }
        }
    }

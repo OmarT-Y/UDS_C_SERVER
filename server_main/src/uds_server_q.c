@@ -131,7 +131,7 @@ static void freeBuffer(void* ptr) {
  */
 static uint8_t UDS_req_q_new_entry(UDS_REQ_t* newReq,uint8_t index)
 {
-	uint8_t i;
+	uint32_t i;
     uint8_t* dataPtr = allocateBuffer(newReq->udsDataLen);
     if(NULL==dataPtr)
     {
