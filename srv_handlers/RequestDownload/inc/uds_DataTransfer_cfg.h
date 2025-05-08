@@ -5,10 +5,8 @@
  *  Modification Logs   : 24-2-2025 File Creation
  ****************************************************************************************************/
 
-#ifndef UDS_REQUEST_DOWNLOAD_CFG_H
-#define UDS_REQUEST_DOWNLOAD_CFG_H
-
-#include "uds_DataTransfer_types.h"
+#ifndef UDS_DATA_TRANSFER_CFG_H
+#define UDS_DATA_TRANSFER_CFG_H
 
 /*****************************************************Start of Generation*****************************************************/
 /*Mask for which encryption technique is used (requests will raise error if greater than the mask, ie: treated as max)(max is 15)*/
@@ -31,7 +29,8 @@
 
 
 #define UDS_MAX_PAYLOAD_SIZE                                        524288ULL
+
+#define UDS_DATA_TRANSFER_USE_VARIABLE_BLOCK_SIZE                   1U
 /******************************************************End of Generation******************************************************/
-extern UDS_dataTransferStatusRecord_t dataTransferStatus;
 
 #endif

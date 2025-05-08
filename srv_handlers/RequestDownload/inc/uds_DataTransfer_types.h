@@ -10,7 +10,7 @@
 #include "uds_types.h"
 #include "uds_NR_Handler.h"
 #include "uds_utils.h"
-
+#include "uds_DataTransfer_cfg.h"
 
 #define SID_34_POS_RES_CODE             0x74
 #define SID_36_POS_RES_CODE             0x76
@@ -41,6 +41,7 @@
  * @param expectedNextBlock The next expected block number
  * @param maxBlockCounter The maximum number for the block counter for a transfer
  * @param maxLoopCounter The maximum number of overflow loops for the block counter
+ * @param remainingPayLoadSize The remaiing size in byte of the payload being transfer (used only in variable block size mode)
  */
 typedef struct 
 {
@@ -49,9 +50,14 @@ typedef struct
     uint64_t payloadSize;
     uint8_t currentLoopCounter;
     uint8_t expectedNextBlock;
+    uint8_t requestComplete; /*change to bool*/
+#if (UDS_DATA_TRANSFER_USE_VARIABLE_BLOCK_SIZE == 0U)
     uint8_t maxBlockCounter;
     uint8_t maxLoopCounter;
-    uint8_t requestComplete; /*change to bool*/
+#elif (UDS_DATA_TRANSFER_USE_VARIABLE_BLOCK_SIZE == 1U)
+    uint64_t remainingPayloadSize;
+#endif
 } UDS_dataTransferStatusRecord_t;
 
+extern UDS_dataTransferStatusRecord_t dataTransferStatus;
 #endif

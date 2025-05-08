@@ -107,6 +107,17 @@ UDS_SID_RECORD_t UDS_a_supportedSID_Record[] =
 #endif
 		},
 		{
+			.sid                        = SID_37_REQUEST_TRANSFER_EXIT,
+			.minLen                     = SID_37_REQUEST_TRANSFER_EXIT_MIN_LEN,
+			.handler                    = SID_37_Handler,
+			.hasSubFunc                 = SID_37_TRANSFER_DATA_HAS_SUB_FUNC,
+#if (SID_37_TRANSFER_DATA_HAS_SUB_FUNC == 1)
+			.subfuncSupportivityStructGet           = SID_37_getSubFunctSuppStruct
+#else
+			.subfuncSupportivityStructGet           = NULL
+#endif
+	},
+		{
 				.sid                                    = SID_3E_TESTER_PRESENT,
 				.minLen                                 = SID_3E_TESTER_PRESENT_MIN_LEN,
 				.handler                                = SID_3E_Handler,

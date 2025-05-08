@@ -72,14 +72,14 @@ static uint8_t UDS_FBL_notifyProgrammingSession(void)
         return 0U;
     }
     i = 0;
-    for(;i<UDS_FBL_MAX_NORIFTY_TRY_COUNT;i++)
-    {
-    	ret = erase_flashbank();
-        if(FLASH_OK == ret)
-        {
-            break;
-        }
-    }
+    // for(;i<UDS_FBL_MAX_NORIFTY_TRY_COUNT;i++)
+    // {
+    // 	ret = erase_flashbank();
+    //     if(FLASH_OK == ret)
+    //     {
+    //         break;
+    //     }
+    // }
     if(UDS_FBL_MAX_NORIFTY_TRY_COUNT <= i)
     {
         /*fail*/
@@ -99,7 +99,7 @@ UDS_RESPONSE_SUPPRESSION_t SID_10_Handler(UDS_REQ_t * request, UDS_RES_t * respo
         return UDS_NO_SUPPRESS_RESPONSE;
     }
 #ifdef UDS_PROGRAMMING_SESSION_ENABLED
-    if(newSession == UDS_PROGRAMMING_SESSION_ID && bootLoaderActiveFlag == 1) //you sure of this??
+    if(newSession == UDS_PROGRAMMING_SESSION_ID && bootLoaderActiveFlag == 0) //you sure of this??
     {
         if(0U == UDS_FBL_notifyProgrammingSession())
         {
@@ -108,30 +108,38 @@ UDS_RESPONSE_SUPPRESSION_t SID_10_Handler(UDS_REQ_t * request, UDS_RES_t * respo
         }
 		handleNRC(request,response,UDS_NRC_0x78_REQUEST_CORRECTLY_RECEIVED_RESPONSE_PENDING,request->data[REQUEST_SID_INDEX]);
         //UDS_PROGRAMMING_RESET_FUNCTION(); //TODO: Must be done through another service request??
-        return UDS_SUPPRESS_RESPONSE;
+        return UDS_NO_SUPPRESS_RESPONSE;
     }
 #endif
-    server->activeSession = newSessionPtr;
-    /*start timeout*/
-    if(UDS_DEFAULT_SESSION_ID != newSessionPtr->SessionID)
+    else
     {
-        START_TIMEOUT_FUNC(server->sessionTimeout);
-    }
-    if(CHECK_REQUEST_SUPPRESS_BIT(request))
-    {/*suppress*/
-        return UDS_SUPPRESS_RESPONSE;
-    }
-    response->data[RESPONSE_SID_INDEX] = SID_10_POS_RES_CODE;
-    response->data[1U] = request->data[1U];
-    /*timing record
-    TODO: endian check*/
-    response->data[2U] = ((uint8_t*)(&(newSessionPtr->p2_server_max)))[0U];
-    response->data[3U] = ((uint8_t*)(&(newSessionPtr->p2_server_max)))[1U];
-    response->data[4U] = ((uint8_t*)(&(newSessionPtr->p2_server_star_max)))[0U];
-    response->data[5U] = ((uint8_t*)(&(newSessionPtr->p2_server_star_max)))[1U];
-    response->udsDataLen = 6U;
+       if(0U == UDS_FBL_notifyProgrammingSession())
+       {
+           handleNRC(request,response,UDS_NRC_0x72_GENERAL_PROGRAMMING_FAILURE,request->data[REQUEST_SID_INDEX]);
+           return UDS_NO_SUPPRESS_RESPONSE;
+       }
+		server->activeSession = newSessionPtr;
+		/*start timeout*/
+		if(UDS_DEFAULT_SESSION_ID != newSessionPtr->SessionID)
+		{
+			START_TIMEOUT_FUNC(server->sessionTimeout);
+		}
+		if(CHECK_REQUEST_SUPPRESS_BIT(request))
+		{/*suppress*/
+			return UDS_SUPPRESS_RESPONSE;
+		}
+		response->data[RESPONSE_SID_INDEX] = SID_10_POS_RES_CODE;
+		response->data[1U] = request->data[1U];
+		/*timing record
+		TODO: endian check*/
+		response->data[2U] = ((uint8_t*)(&(newSessionPtr->p2_server_max)))[0U];
+		response->data[3U] = ((uint8_t*)(&(newSessionPtr->p2_server_max)))[1U];
+		response->data[4U] = ((uint8_t*)(&(newSessionPtr->p2_server_star_max)))[0U];
+		response->data[5U] = ((uint8_t*)(&(newSessionPtr->p2_server_star_max)))[1U];
+		response->udsDataLen = 6U;
 
-    return UDS_NO_SUPPRESS_RESPONSE;
+		return UDS_NO_SUPPRESS_RESPONSE;
+    }
 }
 
 

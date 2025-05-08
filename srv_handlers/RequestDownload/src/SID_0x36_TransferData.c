@@ -5,7 +5,7 @@
  *  Modification Logs   : 24-2-2025 File Creation
  ****************************************************************************************************/
 
-#include "uds_DataTransfer_cfg.h"
+#include "uds_DataTransfer_types.h"
 
 static uint8_t downloadData(UDS_REQ_t *request)
 {
@@ -72,45 +72,48 @@ UDS_RESPONSE_SUPPRESSION_t SID_36_Handler(UDS_REQ_t *request,UDS_RES_t * respons
         }
         else
         {
-            if (currentBlockCounter == dataTransferStatus.maxBlockCounter &&\
+#if (UDS_DATA_TRANSFER_USE_VARIABLE_BLOCK_SIZE == 0U)
+            if(currentBlockCounter == dataTransferStatus.maxBlockCounter &&\
                 dataTransferStatus.currentLoopCounter == dataTransferStatus.maxLoopCounter)
+#elif (UDS_DATA_TRANSFER_USE_VARIABLE_BLOCK_SIZE == 1U)
+            dataTransferStatus.remainingPayloadSize -= (request->udsDataLen- 2U);
+            if(dataTransferStatus.remainingPayloadSize == 0U)
+#endif
+            {
+                dataTransferStatus.requestComplete = 1U;
+            }
+            else
+            {
+                /*TODO: check repeated transfer*/
+                if (currentBlockCounter == dataTransferStatus.expectedNextBlock - 1U)
                 {
-                    dataTransferStatus.requestComplete = 1U;
+                    /*Nothing to be done*/
+                    /*TODO: make sure of this*/
                 }
                 else
                 {
-                    /*TODO: check repeated transfer*/
-                    if (currentBlockCounter == dataTransferStatus.expectedNextBlock - 1U)
+                    if (dataTransferStatus.expectedNextBlock == 0xFFU)
                     {
-                        /*Nothing to be done*/
-                        /*TODO: make sure of this*/
+                        dataTransferStatus.expectedNextBlock = 0U;
+                        dataTransferStatus.currentLoopCounter++;
                     }
                     else
                     {
-                        if (dataTransferStatus.expectedNextBlock == 0xFFU)
-                        {
-                            dataTransferStatus.expectedNextBlock = 0U;
-                            dataTransferStatus.currentLoopCounter++;
-                        }
-                        else
-                        {
-                            dataTransferStatus.expectedNextBlock++;
-                        }
+                        dataTransferStatus.expectedNextBlock++;
                     }
                 }
-
-            	//transferResponseParameterRecord?
-                response->data[RESPONSE_SID_INDEX] = SID_36_POS_RES_CODE;
-                response->data[1U] = currentBlockCounter;
-                response->udsDataLen = 2U;
-                return UDS_NO_SUPPRESS_RESPONSE;
             }
-        }
-        else
-        {
-            /*The upload functionality is not yet supported*/
-            handleNRC(request, response, UDS_NRC_0x10_GENERAL_REJECT, request->data[REQUEST_SID_INDEX]);
+            //transferResponseParameterRecord?
+            response->data[RESPONSE_SID_INDEX] = SID_36_POS_RES_CODE;
+            response->data[1U] = currentBlockCounter;
+            response->udsDataLen = 2U;
             return UDS_NO_SUPPRESS_RESPONSE;
-        
+        }
+    }
+    else
+    {
+        /*The upload functionality is not yet supported*/
+        handleNRC(request, response, UDS_NRC_0x10_GENERAL_REJECT, request->data[REQUEST_SID_INDEX]);
+        return UDS_NO_SUPPRESS_RESPONSE;  
     }
 }

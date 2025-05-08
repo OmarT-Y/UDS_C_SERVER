@@ -4,7 +4,7 @@
  *  Author              : eJad SDV SOTA Graduation Project 2025 Team
  *  Modification Logs   : 27-2-2025 File Creation
  ****************************************************************************************************/
-#include "uds_DataTransfer_cfg.h"
+#include "uds_DataTransfer_types.h"
 
 #define START_SEC_UDS_SEC_CODE
 #include "uds_memMap.h"

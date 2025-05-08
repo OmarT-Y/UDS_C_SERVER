@@ -4,7 +4,7 @@
  *  Author              : eJad SDV SOTA Graduation Project 2025 Team
  *  Modification Logs   : 24-2-2025 File Creation
  ****************************************************************************************************/
-#include "uds_DataTransfer_cfg.h"
+#include "uds_DataTransfer_types.h"
 
 #define START_SEC_UDS_SEC_DATA
 #include "uds_memMap.h"
@@ -14,10 +14,14 @@ UDS_dataTransferStatusRecord_t dataTransferStatus =
     .payloadSize = 0,
     .dataRequestType = UDS_DATA_TRANSFER_NO_REQUEST,
     .expectedNextBlock = 0,
+#if (UDS_DATA_TRANSFER_USE_VARIABLE_BLOCK_SIZE == 0U)
     .maxBlockCounter = 0,
     .maxLoopCounter = 0,
+#elif (UDS_DATA_TRANSFER_USE_VARIABLE_BLOCK_SIZE == 1U)
+    .remainingPayloadSize = 0,
+#endif
     .currentLoopCounter = 0,
-    .requestComplete = 0
+    .requestComplete = 0,
 };
 #define STOP_SEC_UDS_SEC_DATA
 #include "uds_memMap.h"
@@ -110,8 +114,12 @@ UDS_RESPONSE_SUPPRESSION_t SID_34_Handler(UDS_REQ_t *request,UDS_RES_t * respons
         dataTransferStatus.expectedNextBlock = 1U;
         dataTransferStatus.currentLoopCounter = 0U;    
         dataTransferStatus.dataRequestType = UDS_REQUEST_DOWNLOAD;
+#if (UDS_DATA_TRANSFER_USE_VARIABLE_BLOCK_SIZE == 0U)
         dataTransferStatus.maxBlockCounter = (dataTransferStatus.payloadSize/UDS_MAXIMUM_NUMBER_OF_BLOCK_LENGTH) / 256U;
         dataTransferStatus.maxLoopCounter = (dataTransferStatus.payloadSize/UDS_MAXIMUM_NUMBER_OF_BLOCK_LENGTH) % 256U;
+#elif (UDS_DATA_TRANSFER_USE_VARIABLE_BLOCK_SIZE == 1U)
+        dataTransferStatus.remainingPayloadSize = req_payloadSize;
+#endif
         dataTransferStatus.requestComplete = 0U;
     }
 

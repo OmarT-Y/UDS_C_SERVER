@@ -29,7 +29,7 @@ extern UDS_SID_RECORD_t UDS_a_supportedSID_Record[];
 #define SID_34_REQUEST_DOWNLOAD_ENABLED
 #define SID_36_TRANSFER_DATA_ENABLED
 #define SID_37_TRANSFER_REQUEST_EXIT_ENABLED
-#define UDS_NUMBER_OF_SUPPORTED_SERVICES            7
+#define UDS_NUMBER_OF_SUPPORTED_SERVICES            9
 
 /*TODO: Change to STD_ON STD_OFF*/
  
@@ -230,6 +230,10 @@ const UDS_SubFunctionSupportivity_t* SID_36_getSubFunctSuppStruct(uint8_t subFun
 
 /* Service parameters for SID 0x34 */
 #ifdef SID_37_TRANSFER_REQUEST_EXIT_ENABLED
+
+#define SID_37_REQUEST_TRANSFER_EXIT                             0x37
+#define SID_37_REQUEST_TRANSFER_EXIT_MIN_LEN                     0x1
+#define SID_37_TRANSFER_DATA_HAS_SUB_FUNC                        0
 /**
  * @brief Handler for Request Transfer Exit Service - SID 0x37
  * @param request Incoming UDS Request
