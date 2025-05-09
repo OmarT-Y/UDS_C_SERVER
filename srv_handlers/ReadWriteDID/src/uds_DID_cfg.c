@@ -92,7 +92,18 @@
          .readDIDptr = NULL,
          .SupportivityStruct = &did_0001_supportivity
      }
- };
+};
  /*************************************************************************End Of Generation*************************************************************************/
+#if defined(__STDC_VERSION__) && (__STDC_VERSION__ >= 201112L)
+    /* C11 or later: Safe to use static_assert */
+    #include <assert.h>
+    static_assert(sizeof(UDS_DIDS) == sizeof(UDS_DID_t) * UDS_NUM_OF_DIDS,
+                  "The number of the supported DIDs doesn't match its generated macro (UDS_NUM_OF_DIDS)");
+#else
+    typedef char SizeMismatchCheck[
+        (sizeof(UDS_DIDS) == sizeof(UDS_DID_t) * UDS_NUM_OF_DIDS) ? 1 : -1];
+#endif
+
+
  #define STOP_SEC_UDS_SEC_CONST_DATA
  #include "uds_memMap.h"

@@ -7,6 +7,8 @@
 
 #include "uds_securityLvl_cfg.h"
 
+ #define START_SEC_UDS_SEC_CONST_DATA
+ #include "uds_memMap.h"
 
 static const uint8_t secLvl_0x00_suppSessions[] = {1, 2};
 #ifdef UDS_SECURITY_LEVEL_SUPPORTED 
@@ -63,3 +65,16 @@ void UDS_securityAccess_timeout(void (*callBack)(void))
 {
     return;
 }
+
+#if defined(__STDC_VERSION__) && (__STDC_VERSION__ >= 201112L)
+    /* C11 or later: Safe to use static_assert */
+    #include <assert.h>
+    static_assert(sizeof(securityLevels) == sizeof(UDS_SecurityLevel_t) * UDS_NUMBER_OF_SECURITY_LEVELS,
+                  "The size of the supported security level array (securityLevels) doesn't match its size defined in the macro (UDS_NUMBER_OF_SECURITY_LEVELS)");
+#else
+    typedef char SizeMismatchCheck[
+        (sizeof(securityLevels) == sizeof(UDS_SecurityLevel_t) * UDS_NUMBER_OF_SECURITY_LEVELS) ? 1 : -1];
+#endif
+
+#define STOP_SEC_UDS_SEC_CONST_DATA
+#include "uds_memMap.h"

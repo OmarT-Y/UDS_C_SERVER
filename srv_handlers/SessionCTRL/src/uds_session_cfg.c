@@ -6,7 +6,8 @@
  ****************************************************************************************************/
 
 #include "uds_session_cfg.h"
-
+ #define START_SEC_UDS_SEC_CONST_DATA
+ #include "uds_memMap.h"
 /**
  * Session Records
  * Generated according to supported sessions
@@ -76,3 +77,16 @@ void SID_10_startTimeout(uint16_t t)
 {
     return;
 }
+
+#if defined(__STDC_VERSION__) && (__STDC_VERSION__ >= 201112L)
+    /* C11 or later: Safe to use static_assert */
+    #include <assert.h>
+    static_assert(sizeof(serverSessions) == sizeof(UDS_Session_t) * UDS_NUMBER_OF_SESSIONS,
+                  "The size of the supported session array doesn't match the macro (UDS_NUMBER_OF_SESSIONS)");
+#else
+    typedef char SizeMismatchCheck[
+        (sizeof(serverSessions) == sizeof(UDS_Session_t) * UDS_NUMBER_OF_SESSIONS) ? 1 : -1];
+#endif
+
+#define STOP_SEC_UDS_SEC_CONST_DATA
+#include "uds_memMap.h"

@@ -130,5 +130,15 @@ UDS_SID_RECORD_t UDS_a_supportedSID_Record[] =
 		}
 };
 
+#if defined(__STDC_VERSION__) && (__STDC_VERSION__ >= 201112L)
+    /*C11 or later: Safe to use static_assert*/ 
+    #include <assert.h>
+    static_assert(sizeof(UDS_a_supportedSID_Record) == sizeof(UDS_SID_RECORD_t) * UDS_NUMBER_OF_SUPPORTED_SERVICES,
+                  "The size of the SID record array doesn't match its defined macro");
+#else
+    typedef char SizeMismatchCheck[
+        (sizeof(UDS_a_supportedSID_Record) == sizeof(UDS_SID_RECORD_t) * UDS_NUMBER_OF_SUPPORTED_SERVICES) ? 1 : -1];
+#endif
+
 #define STOP_SEC_UDS_SEC_CONST_DATA
 #include "uds_memMap.h"

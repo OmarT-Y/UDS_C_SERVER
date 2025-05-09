@@ -13,16 +13,11 @@
 #include "uds_routines_types.h"
 
 /*************************************************************************Start of Generation*************************************************************************/
-#define UDS_NUM_OF_ROUTINES 2U
+#define UDS_NUM_OF_ROUTINES 1U
 
-/*Routine 0001 Functions*/
+/*Routine FF00 Functions*/
 uint8_t rid_0001_start(uint8_t* data,uint8_t dataLen);
-uint8_t rid_0001_stop(uint8_t* data,uint8_t dataLen);
-UDS_RoutineStatus_t rid_0001_checkRes(uint8_t* data,uint8_t dataLen);
-/*Routine 0002 Functions*/
-uint8_t rid_0002_start(uint8_t* data,uint8_t dataLen);
-uint8_t rid_0002_stop(uint8_t* data,uint8_t dataLen);
-UDS_RoutineStatus_t rid_0002_checkRes(uint8_t* data,uint8_t dataLen);
+
 /**************************************************************************End of Generation**************************************************************************/
 
 #define UDS_START_ROUTINE_SUBFUNC 0x01

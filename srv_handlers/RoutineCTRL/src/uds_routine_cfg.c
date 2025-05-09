@@ -25,46 +25,30 @@
      .supportedSecurityLvlLen = 2U
  #endif
  };
- static const uint8_t rid_0002_sessions[] = {0, 1};
- #ifdef UDS_SECURITY_LEVEL_SUPPORTED 
- static const uint8_t rid_0002_security[] = {0, 1};
- #endif
- static const UDS_SubFunctionSupportivity_t rid_0002_supportivity = 
- {
-     .supportedSessions = rid_0002_sessions,
-     .supportedSessionsLen = 2U
- #ifdef UDS_SECURITY_LEVEL_SUPPORTED
-     ,
-     .supportedSecurityLvl = rid_0002_security,
-     .supportedSecurityLvlLen = 2U
- #endif
- };
  /* Array of DID structure according to configuration */
  UDS_RID_RECORD_t UDS_Routines[UDS_NUM_OF_ROUTINES] =
  {
      {
-         .rid = 0x01,
-         .optionRecordSize = 1U,
+         .rid = 0xFF00,
+         .optionRecordSize = 0U,
          .isRestartable = 0U,
          .status = ROUTINE_STATUS_STOPPED,
-         .routineStartHandler = NULL,
+         .routineStartHandler = rid_0001_start,
          .routineStopHandler = NULL,
          .routineCheckResultsHandler = NULL,
          .SupportivityStruct = &rid_0001_supportivity
-     },
-     
-     {
-         .rid = 0x02,
-         .optionRecordSize = 1U,
-         .isRestartable = 0U,
-         .status = ROUTINE_STATUS_STOPPED,
-         .routineStartHandler = NULL,
-         .routineStopHandler = NULL,
-         .routineCheckResultsHandler = NULL,
-         .SupportivityStruct = &rid_0002_supportivity
      }
  };
  /**************************************************************************End of Generation**************************************************************************/
+#if defined(__STDC_VERSION__) && (__STDC_VERSION__ >= 201112L)
+    /* C11 or later: Safe to use static_assert */
+    #include <assert.h>
+    static_assert(sizeof(UDS_Routines) == sizeof(UDS_RID_RECORD_t) * UDS_NUM_OF_ROUTINES,
+                  "The size of the supported routines array (UDS_Routines) doesn't match its size defined in the macro (UDS_NUM_OF_ROUTINES)");
+#else
+    typedef char SizeMismatchCheck[
+        (sizeof(UDS_Routines) == sizeof(UDS_RID_RECORD_t) * UDS_NUM_OF_ROUTINES) ? 1 : -1];
+#endif
  #define STOP_SEC_UDS_SEC_CONST_DATA
  #include "uds_memMap.h"
  

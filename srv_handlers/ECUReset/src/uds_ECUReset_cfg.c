@@ -51,6 +51,15 @@ const UDS_ResetType_t SupportedResets[UDS_NUMBER_OF_SUPPORTED_RESETS] =
     }
 };
 /*************************************************************************End Of Generation*************************************************************************/
+#if defined(__STDC_VERSION__) && (__STDC_VERSION__ >= 201112L)
+    /* C11 or later: Safe to use static_assert */
+    #include <assert.h>
+    static_assert(sizeof(SupportedResets) == sizeof(UDS_ResetType_t) * UDS_NUMBER_OF_SUPPORTED_RESETS,
+                  "The size of the supported resets array doesn't match its defined macro");
+#else
+    typedef char SizeMismatchCheck[
+        (sizeof(SupportedResets) == sizeof(UDS_ResetType_t) * UDS_NUMBER_OF_SUPPORTED_RESETS) ? 1 : -1];
+#endif
 #define STOP_SEC_UDS_SEC_CONST_DATA
 #include "uds_memMap.h"
 

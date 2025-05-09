@@ -26,8 +26,12 @@ UDS_RESPONSE_SUPPRESSION_t SID_37_Handler(UDS_REQ_t *request,UDS_RES_t * respons
     dataTransferStatus.address=0U;
     dataTransferStatus.dataRequestType = UDS_DATA_TRANSFER_NO_REQUEST;
     dataTransferStatus.expectedNextBlock = 0U;
+#if (UDS_DATA_TRANSFER_USE_VARIABLE_BLOCK_SIZE == 0U)
     dataTransferStatus.maxBlockCounter = 0U;
     dataTransferStatus.maxLoopCounter = 0U;
+#elif (UDS_DATA_TRANSFER_USE_VARIABLE_BLOCK_SIZE == 1U)
+    dataTransferStatus.remainingPayloadSize = 0;
+#endif
     dataTransferStatus.currentLoopCounter = 0U;
     dataTransferStatus.requestComplete = 0U;
     response->data[RESPONSE_SID_INDEX]=SID_37_POS_RES_CODE;
