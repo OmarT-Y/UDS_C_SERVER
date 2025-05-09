@@ -56,7 +56,7 @@ UDS_RESPONSE_SUPPRESSION_t SID_22_Handler(UDS_REQ_t * request, UDS_RES_t * respo
     /*Max and Min length check*/
     if ((request->udsDataLen < 3U) || (request->udsDataLen > 1U + 2U * MAX_NUM_OF_READABLE_DIDS_IN_ONE_REQUEST))
     {
-        handleNRC(request,response,UDS_NRC_0x13_INCORRCT_MESSAGE_LENGTH_OR_INNVALID_FORMAT,request->data[REQUEST_SID_INDEX]);
+        handleNRC(request,response,UDS_NRC_0x13_INCORRCT_MESSAGE_LENGTH_OR_INVALID_FORMAT,request->data[REQUEST_SID_INDEX]);
         return UDS_NO_SUPPRESS_RESPONSE;
     }
     /*TODO : change to bool and STD_NO habibi*/

@@ -7,6 +7,9 @@
 
 #include "uds_securityLvl_cfg.h"
 
+extern void UDS_defaultSecurityLevelResetCallBack();
+extern void uds_secLvl_attempt_callBack();
+
  #define START_SEC_UDS_SEC_CONST_DATA
  #include "uds_memMap.h"
 
@@ -47,22 +50,30 @@ UDS_SecurityLevel_t  securityLevels [UDS_NUMBER_OF_SECURITY_LEVELS] =
         .SupportivityStruct = &secLvl_0x00_supportivity,
         .keyLen = SECURITY_LEVEL_0x00_KEY_LENGTH,
         .seedLen = SECURITY_LEVEL_0x00_SEED_LENGTH,
-        .seedFunc = NULL,
-        .keyCheckFunc = NULL
+        .seedFunc = secLvl_0x00_seedFunc,
+        .keyCheckFunc = secLvl_0x00_keyCheckFunc,
+        .LevelTimeout = SECURITY_LEVEL_0x00_TIMEOUT
     },
     {
         .SecurityLvlID    = SECURITY_LEVEL_0x01_ID,
         .supportedService = SECURITY_LEVEL_0x01_SUPPORTED_SID_MASK,
         .SupportivityStruct = &secLvl_0x01_supportivity,
-        .keyLen = SECURITY_LEVEL_0x00_KEY_LENGTH,
-        .seedLen = SECURITY_LEVEL_0x00_SEED_LENGTH,
-        .seedFunc = NULL,
-        .keyCheckFunc = NULL
+        .keyLen = SECURITY_LEVEL_0x01_KEY_LENGTH,
+        .seedLen = SECURITY_LEVEL_0x01_SEED_LENGTH,
+        .seedFunc = secLvl_0x01_seedFunc,
+        .keyCheckFunc = secLvl_0x01_keyCheckFunc,
+        .LevelTimeout = SECURITY_LEVEL_0x01_TIMEOUT
     }
 };
 
-void UDS_securityAccess_timeout(void (*callBack)(void))
+void UDS_securityAccess_attemptCount_timeout(uint16_t time)
 {
+    /*this should set the function "uds_secLvl_attempt_callBack" as a call back after "time" ms*/
+    return;
+}
+void UDS_securityAccess_defaultLvl_timeout(uint16_t time)
+{
+    /*This should set the function "UDS_defaultSecurityLevelResetCallBack" as call back after "time" ms*/
     return;
 }
 

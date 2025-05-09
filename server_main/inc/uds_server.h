@@ -42,6 +42,11 @@ void UDS_RequestIndication(UDS_REQ_t* request);
 void UDS_defaultSessionResetCallBack();
 
 /**
+ * @brief Callback function to reset the security level back to the default
+ */
+void UDS_defaultSecurityLevelResetCallBack();
+
+/**
  * @brief This funciton is used to send the response over any communication bus
  * @brief The function should be implemented in the uds_wrapper to be complient with any need standard (AUTOSAR,openBSW)
  * @param response The response prepared by the uds server

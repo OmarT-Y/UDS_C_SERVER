@@ -120,7 +120,7 @@ UDS_RESPONSE_SUPPRESSION_t SID_10_Handler(UDS_REQ_t * request, UDS_RES_t * respo
        }
 		server->activeSession = newSessionPtr;
 		/*start timeout*/
-		if(UDS_DEFAULT_SESSION_ID != newSessionPtr->SessionID)
+		if(UDS_DEFAULT_SESSION_ID != newSessionPtr->SessionID && UDS_DEFAULT_SESSION_ID != newSessionPtr->SessionID)
 		{
 			START_TIMEOUT_FUNC(server->sessionTimeout);
 		}

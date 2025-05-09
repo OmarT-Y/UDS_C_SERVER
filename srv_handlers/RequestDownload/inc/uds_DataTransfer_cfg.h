@@ -31,6 +31,8 @@
 #define UDS_MAX_PAYLOAD_SIZE                                        524288ULL
 
 #define UDS_DATA_TRANSFER_USE_VARIABLE_BLOCK_SIZE                   1U
+
+extern uint8_t preFlashConditionsChecks(void);
 /******************************************************End of Generation******************************************************/
 
 #endif

@@ -20,7 +20,7 @@
 #define UDS_NRC_0x10_GENERAL_REJECT                                      0X10U
 #define UDS_NRC_0x11_SERVICE_NOT_SUPPORTED                              0X11U
 #define UDS_NRC_0x12_SUB_FUNCTION_NOT_SUPPORTED                          0x12U
-#define UDS_NRC_0x13_INCORRCT_MESSAGE_LENGTH_OR_INNVALID_FORMAT          0x13U
+#define UDS_NRC_0x13_INCORRCT_MESSAGE_LENGTH_OR_INVALID_FORMAT          0x13U
 #define UDS_NRC_0x14_RESPONSE_TOO_LONG                                   0x14U
 #define UDS_NRC_0x21_BUSY_REPEAT_REQUEST                                 0x21U
 #define UDS_NRC_0x22_CONDITIONS_NOT_CORRECT                              0x22U
@@ -54,7 +54,7 @@
 #define UDS_NRC_0x8D_TRANSMISSION_RANGE_NOT_IN_GEAR                      0x8DU
 #define UDS_NRC_0x8F_BRAKE_SWITCH_NOT_CLOSED                             0x8FU
 #define UDS_NRC_0x90_SHIFTER_LEVER_NOT_IN_PARK                           0x90U
-#define UDS_NRC_0x91_TORQUE_CONVERTER_CLUTCH_cOCKED                      0x91U
+#define UDS_NRC_0x91_TORQUE_CONVERTER_CLUTCH_LOCKED                      0x91U
 #define UDS_NRC_0x92_VOLTAGE_TOO_HIGH                                    0x92U
 #define UDS_NRC_0x93_VOLTAGE_TOO_LOW                                     0x93U
 /**

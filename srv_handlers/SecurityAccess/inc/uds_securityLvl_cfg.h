@@ -15,7 +15,7 @@
 
 #define UDS_SECURITY_ACCESS_REQUEST_SEED                            0x1
 #define UDS_SECURITY_ACCESS_SEND_KEY                                0x0
-void UDS_securityAccess_timeout(void (*callBack)(void));
+void UDS_securityAccess_attemptCount_timeout(uint16_t);
 
 /*************************************************************************Start of Generation*************************************************************************/
 /* maximum number of invalid attempts */
@@ -25,19 +25,21 @@ void UDS_securityAccess_timeout(void (*callBack)(void));
 
 
 #define SECURITY_LEVEL_0x00_ID                                       0x0
-#define SECURITY_LEVEL_0x00_SUPPORTED_SID_MASK                       {0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff}
+#define SECURITY_LEVEL_0x00_SUPPORTED_SID_MASK                       {0x0, 0x0, 0x0, 0x0, 0x0, 0x0}
 #define SECURITY_LEVEL_0x00_SEED_LENGTH                              2U
 #define SECURITY_LEVEL_0x00_KEY_LENGTH                               2U
-uint8_t* secLvl_0x00_seedFunc(void);
-uint8_t  secLvl_0x00_keyCheckFunc(void);
+#define SECURITY_LEVEL_0x00_TIMEOUT                                  100000UL
+const uint8_t* secLvl_0x00_seedFunc(void);
+uint8_t  secLvl_0x00_keyCheckFunc(uint8_t*);
 
 
 #define SECURITY_LEVEL_0x01_ID                                       0x1
 #define SECURITY_LEVEL_0x01_SUPPORTED_SID_MASK                       {0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff}
 #define SECURITY_LEVEL_0x01_SEED_LENGTH                              2U
 #define SECURITY_LEVEL_0x01_KEY_LENGTH                               2U
-uint8_t* secLvl_0x01_seedFunc(void);
-uint8_t  secLvl_0x01_keyCheckFunc(void);
+#define SECURITY_LEVEL_0x01_TIMEOUT                                  100000UL
+const uint8_t* secLvl_0x01_seedFunc(void);
+uint8_t  secLvl_0x01_keyCheckFunc(uint8_t*);
 
 #define SECURITY_LVL_DEFAULT_ID                                      SECURITY_LEVEL_0x00_ID
 #define SECURITY_LVL_DEFAULT_STRUCT_PTR                              &securityLevels[0U]

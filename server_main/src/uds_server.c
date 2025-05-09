@@ -182,7 +182,7 @@ static UDS_RESPONSE_SUPPRESSION_t  UDS_handleRequest(UDS_REQ_t* request, UDS_RES
                 return UDS_SUPPRESS_RESPONSE;
             }
             /*NRC 0x13 (invalid length)*/
-            handleNRC(request,response,UDS_NRC_0x13_INCORRCT_MESSAGE_LENGTH_OR_INNVALID_FORMAT,request->data[REQUEST_SID_INDEX]);
+            handleNRC(request,response,UDS_NRC_0x13_INCORRCT_MESSAGE_LENGTH_OR_INVALID_FORMAT,request->data[REQUEST_SID_INDEX]);
             return UDS_NO_SUPPRESS_RESPONSE;
         }
         const UDS_SubFunctionSupportivity_t* subFuncSuppStruct = sid_record->subfuncSupportivityStructGet(request->data[REQUEST_SUB_FUNCTION_INDEX] & 0x7FU);
@@ -236,6 +236,15 @@ void UDS_defaultSessionResetCallBack()
     }
 }
 
+#ifdef UDS_SECURITY_LEVEL_SUPPORTED
+void UDS_defaultSecurityLevelResetCallBack()
+{
+    if(udsServer.activeSecLvl->SecurityLvlID != SECURITY_LVL_DEFAULT_ID)
+    {
+        udsServer.activeSecLvl = SECURITY_LVL_DEFAULT_STRUCT_PTR;
+    }
+}
+#endif
 void UDS_RequestIndication(UDS_REQ_t* request)
 {
     if(UDS_SERVER_QUEUE_MAX_NUMBER_OF_REQS == UDS_readyReqCheck())

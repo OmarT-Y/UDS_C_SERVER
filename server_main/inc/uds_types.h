@@ -147,6 +147,7 @@ typedef uint8_t (*securityKeyCheckFuncPtr)(const uint8_t* key);
   * @param keyLen The length of the key used in the security level
   * @param seedFunc Pointer to the funciton that generates the seed
   * @param keyCheckFunc pointer to the funciton that checks the key
+  * @param LevelTimeout The time after which the server will reset to default level /or/ the time which the service will be locked after MAX_INVALID_ATTEMPTS is exceeded
   */
  typedef struct
  {
@@ -157,6 +158,7 @@ typedef uint8_t (*securityKeyCheckFuncPtr)(const uint8_t* key);
     uint8_t                                         keyLen;
     securitySeedFuncPtr                             seedFunc;
     securityKeyCheckFuncPtr                         keyCheckFunc;
+    uint16_t                                        LevelTimeout;
  }UDS_SecurityLevel_t;
 
 /** 

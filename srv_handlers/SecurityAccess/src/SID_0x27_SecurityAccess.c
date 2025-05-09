@@ -22,7 +22,7 @@ uint8_t invalidTimerFlag = 0;
 
 #define START_SEC_UDS_SEC_CODE
 #include "uds_memMap.h"
-void uds_secLvl_timer_callBack(void)
+void uds_secLvl_attempt_callBack(void)
 {
     invalidTimerFlag = 0U;
 }
@@ -74,10 +74,10 @@ UDS_RESPONSE_SUPPRESSION_t SID_27_Handler(UDS_REQ_t * request, UDS_RES_t * respo
     {
         if(NULL == securityLevelRecord->seedFunc)
         {
-            handleNRC(request,response,UDS_NRC_0x10_GENERAL_REJECT,request->data[REQUEST_SID_INDEX]);
+            handleNRC(request,response,UDS_NRC_0x72_GENERAL_PROGRAMMING_FAILURE,request->data[REQUEST_SID_INDEX]);
             return UDS_NO_SUPPRESS_RESPONSE;
         }
-        uint8_t* seedPtr = NULL;
+        const uint8_t* seedPtr = NULL;
         seedPtr =  securityLevelRecord->seedFunc();
         if(NULL != seedPtr)
         {
@@ -108,7 +108,7 @@ UDS_RESPONSE_SUPPRESSION_t SID_27_Handler(UDS_REQ_t * request, UDS_RES_t * respo
         uint8_t reqKeyLen = request->udsDataLen-2U;
         if(reqKeyLen != securityLevelRecord->keyLen)
         {
-            handleNRC(request,response,UDS_NRC_0x13_INCORRCT_MESSAGE_LENGTH_OR_INNVALID_FORMAT,request->data[REQUEST_SID_INDEX]);
+            handleNRC(request,response,UDS_NRC_0x13_INCORRCT_MESSAGE_LENGTH_OR_INVALID_FORMAT,request->data[REQUEST_SID_INDEX]);
             return UDS_NO_SUPPRESS_RESPONSE;
         }
         if(level != securityLevelStatus.level)
@@ -121,6 +121,10 @@ UDS_RESPONSE_SUPPRESSION_t SID_27_Handler(UDS_REQ_t * request, UDS_RES_t * respo
         if(1U == securityLevelRecord->keyCheckFunc(keyPtr))
         {
             /* success */
+            if(SECURITY_LVL_DEFAULT_ID != securityLevelRecord->SecurityLvlID && securityLevelRecord->SecurityLvlID != server->activeSecLvl)
+            {
+                UDS_securityAccess_defaultLvl_timeout(securityLevelRecord->LevelTimeout);
+            }
             securityLevelStatus.status = SECURITY_LEVEL_NO_REQUESTS;
             server->activeSecLvl = securityLevelRecord;
             response->data[RESPONSE_SID_INDEX] = SID_27_POS_RES_CODE;
@@ -137,7 +141,7 @@ UDS_RESPONSE_SUPPRESSION_t SID_27_Handler(UDS_REQ_t * request, UDS_RES_t * respo
                 invalidAttemp=0U;
                 handleNRC(request,response,UDS_NRC_0x36_EXCEED_NUMBER_OF_ATTEMPS,request->data[REQUEST_SID_INDEX]);
                 invalidTimerFlag = 1U;
-                UDS_securityAccess_timeout(uds_secLvl_timer_callBack);
+                UDS_securityAccess_attemptCount_timeout(securityLevelRecord->LevelTimeout);
                 return UDS_NO_SUPPRESS_RESPONSE;
                 
             }

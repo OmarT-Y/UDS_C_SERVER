@@ -40,10 +40,14 @@ UDS_RESPONSE_SUPPRESSION_t SID_34_Handler(UDS_REQ_t *request,UDS_RES_t * respons
     /*Min data length check*/
     if(request->udsDataLen < 5U)
     {
-        handleNRC(request,response,UDS_NRC_0x13_INCORRCT_MESSAGE_LENGTH_OR_INNVALID_FORMAT,request->data[REQUEST_SID_INDEX]);
+        handleNRC(request,response,UDS_NRC_0x13_INCORRCT_MESSAGE_LENGTH_OR_INVALID_FORMAT,request->data[REQUEST_SID_INDEX]);
         return UDS_NO_SUPPRESS_RESPONSE;
     }
-
+    if(0U==preFlashConditionsChecks())
+    {
+        handleNRC(request,response,UDS_NRC_0x22_CONDITIONS_NOT_CORRECT,request->data[REQUEST_SID_INDEX]);
+        return UDS_NO_SUPPRESS_RESPONSE;
+    }
     uint8_t requestEncryption = request->data[1U] & 0x0FU;
     uint8_t requestCompression = request->data[1U] >> 4U;
     /*Encryption technique check*/
@@ -78,7 +82,7 @@ UDS_RESPONSE_SUPPRESSION_t SID_34_Handler(UDS_REQ_t *request,UDS_RES_t * respons
     /* Full data length check */
     if(request->udsDataLen != ( 3U + address_ByteCount + payloadSize_ByteCount ))
     {
-        handleNRC(request,response,UDS_NRC_0x13_INCORRCT_MESSAGE_LENGTH_OR_INNVALID_FORMAT,request->data[REQUEST_SID_INDEX]);
+        handleNRC(request,response,UDS_NRC_0x13_INCORRCT_MESSAGE_LENGTH_OR_INVALID_FORMAT,request->data[REQUEST_SID_INDEX]);
         return UDS_NO_SUPPRESS_RESPONSE;
     }
 

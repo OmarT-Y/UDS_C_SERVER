@@ -35,7 +35,8 @@ uds_securityLvl_cfg.c
                                 .keyLen = SECURITY_LEVEL_0xXX_KEY_LENGTH,
                                 .seedLen = SECURITY_LEVEL_0xXX_SEED_LENGTH,
                                 .seedFunc = secLvl_0xXX_seedFunc,
-                                .keyCheckFunc = secLvl_0xXX_keyCheckFunc
+                                .keyCheckFunc = secLvl_0xXX_keyCheckFunc,
+                                .LevelTimeout = SECURITY_LEVEL_0xXX_TIMEOUT
                             },
                             {
                                 .SecurityLvlID    = SECURITY_LEVEL_0xXX_ID,
@@ -44,7 +45,8 @@ uds_securityLvl_cfg.c
                                 .keyLen = SECURITY_LEVEL_0xXX_KEY_LENGTH,
                                 .seedLen = SECURITY_LEVEL_0xXX_SEED_LENGTH,
                                 .seedFunc = secLvl_0xXX_seedFunc,
-                                .keyCheckFunc = secLvl_0xXX_keyCheckFunc
+                                .keyCheckFunc = secLvl_0xXX_keyCheckFunc,
+                                .LevelTimeout = SECURITY_LEVEL_0xXX_TIMEOUT
                             }
                         };
-    ->if needed implement the funciton     void UDS_securityAccess_timeout(void (*callBack)(void));       
+    ->if needed implement the funciton     void UDS_securityAccess_attemptCount_timeout(uint16_t);       

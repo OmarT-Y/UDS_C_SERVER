@@ -54,7 +54,7 @@ UDS_RESPONSE_SUPPRESSION_t SID_31_Handler(UDS_REQ_t *request, UDS_RES_t *respons
     /*Min length check*/
     if (request->udsDataLen < 4U)
     {
-        handleNRC(request, response, UDS_NRC_0x13_INCORRCT_MESSAGE_LENGTH_OR_INNVALID_FORMAT, request->data[REQUEST_SID_INDEX]);
+        handleNRC(request, response, UDS_NRC_0x13_INCORRCT_MESSAGE_LENGTH_OR_INVALID_FORMAT, request->data[REQUEST_SID_INDEX]);
         return UDS_NO_SUPPRESS_RESPONSE;
     }
     /*parse the Routien ID*/
@@ -105,7 +105,7 @@ UDS_RESPONSE_SUPPRESSION_t SID_31_Handler(UDS_REQ_t *request, UDS_RES_t *respons
     {
         if(request->trgAddType==UDS_A_TA_FUNCTIONAL)
         {
-            handleNRC(request, response, UDS_NRC_0x13_INCORRCT_MESSAGE_LENGTH_OR_INNVALID_FORMAT, request->data[REQUEST_SID_INDEX]);
+            handleNRC(request, response, UDS_NRC_0x13_INCORRCT_MESSAGE_LENGTH_OR_INVALID_FORMAT, request->data[REQUEST_SID_INDEX]);
             return UDS_NO_SUPPRESS_RESPONSE;
         }
         else

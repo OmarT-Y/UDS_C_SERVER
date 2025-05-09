@@ -19,7 +19,7 @@ UDS_RESPONSE_SUPPRESSION_t SID_37_Handler(UDS_REQ_t *request,UDS_RES_t * respons
     /*Check server length < 1*/
     if(request->udsDataLen != 1U)
     {
-        handleNRC(request, response, UDS_NRC_0x13_INCORRCT_MESSAGE_LENGTH_OR_INNVALID_FORMAT, request->data[REQUEST_SID_INDEX]);
+        handleNRC(request, response, UDS_NRC_0x13_INCORRCT_MESSAGE_LENGTH_OR_INVALID_FORMAT, request->data[REQUEST_SID_INDEX]);
         return  UDS_NO_SUPPRESS_RESPONSE;
     }
     dataTransferStatus.payloadSize = 0U;

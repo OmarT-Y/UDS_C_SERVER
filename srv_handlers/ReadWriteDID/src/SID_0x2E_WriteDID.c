@@ -14,7 +14,7 @@ UDS_RESPONSE_SUPPRESSION_t SID_2E_Handler(UDS_REQ_t *request, UDS_RES_t *respons
     /*Check min request length*/
     if ((request->udsDataLen < 4U))
     {
-        handleNRC(request,response,UDS_NRC_0x13_INCORRCT_MESSAGE_LENGTH_OR_INNVALID_FORMAT,request->data[REQUEST_SID_INDEX]);
+        handleNRC(request,response,UDS_NRC_0x13_INCORRCT_MESSAGE_LENGTH_OR_INVALID_FORMAT,request->data[REQUEST_SID_INDEX]);
         if(request->trgAddType==UDS_A_TA_FUNCTIONAL)
         {
             return UDS_SUPPRESS_RESPONSE;
@@ -39,7 +39,7 @@ UDS_RESPONSE_SUPPRESSION_t SID_2E_Handler(UDS_REQ_t *request, UDS_RES_t *respons
 
     if(((request->udsDataLen) - 3U) != didRecord->dataLen)/*total length should return nrc */
     {
-        handleNRC(request,response,UDS_NRC_0x13_INCORRCT_MESSAGE_LENGTH_OR_INNVALID_FORMAT,request->data[REQUEST_SID_INDEX]);
+        handleNRC(request,response,UDS_NRC_0x13_INCORRCT_MESSAGE_LENGTH_OR_INVALID_FORMAT,request->data[REQUEST_SID_INDEX]);
         if(request->trgAddType==UDS_A_TA_FUNCTIONAL)
         {
             return UDS_SUPPRESS_RESPONSE;

@@ -6,6 +6,7 @@
  ****************************************************************************************************/
 
 #include "uds_session_cfg.h"
+extern void UDS_defaultSessionResetCallBack();
  #define START_SEC_UDS_SEC_CONST_DATA
  #include "uds_memMap.h"
 /**
@@ -75,6 +76,7 @@ UDS_Session_t serverSessions [UDS_NUMBER_OF_SESSIONS] =
 
 void SID_10_startTimeout(uint16_t t)
 {
+    /*this should set the function "UDS_defaultSessionResetCallBack" as callback after t ms*/
     return;
 }
 
