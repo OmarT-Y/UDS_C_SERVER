@@ -20,7 +20,6 @@
 #include "uds_helpers.h"
 #include "uds_server_q.h"
 
-#include "CanTp.h"
 
 /**
  * @brief Initializes the UDS server

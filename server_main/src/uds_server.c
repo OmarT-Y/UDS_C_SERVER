@@ -6,6 +6,9 @@
  ****************************************************************************************************/
 #include "uds_server.h"
 
+extern uint8_t bootLoaderActiveFlag;
+void UDS_securityAccess_defaultLvl_timeout(uint16_t time);
+
 #define START_SEC_UDS_SEC_DATA
 #include "uds_memMap.h"
 /**
@@ -275,12 +278,19 @@ void UDS_mainFunction(void)
                     handleNRC(request,&response,UDS_NRC_0x78_REQUEST_CORRECTLY_RECEIVED_RESPONSE_PENDING,request->data[REQUEST_SID_INDEX]);
                     if(1U == UDS_sendResponse(&response))
                     {
-                        /*Yield Task for some time (some % of the p2 time of the current session)*/
+                        /*TODO:Yield Task for some time (some % of the p2 time of the current session)*/
                     }
                     else
                     {
                         /*This should never happen*/
                         /*No action*/
+                    }
+                    break;
+                case UDS_REQUEST_GENERAL_ERROR:
+                    handleNRC(request,&response,UDS_NRC_0x10_GENERAL_REJECT,request->data[REQUEST_SID_INDEX]);
+                    if(1U == UDS_sendResponse(&response))
+                    {
+                        request->status = UDS_REQUEST_STATUS_FINISHED;
                     }
                     break;
                 case UDS_REQUEST_STATUS_SERVED_NOT_RESPONDED_TO:
@@ -358,6 +368,36 @@ void UDS_defaultSecurityLevelResetCallBack()
         udsServer.activeSecLvl = SECURITY_LVL_DEFAULT_STRUCT_PTR;
     }
 }
+
+void UDS_setSecurityLvlAfterProgSessionReset(UDS_SecurityLevel_t* lvlRecord)
+{
+    if(bootLoaderActiveFlag)
+    {
+        udsServer.activeSecLvl = lvlRecord;
+        /*re-start timeout*/
+        if(SECURITY_LVL_DEFAULT_ID != udsServer.activeSecLvl->SecurityLvlID)
+        {
+            UDS_securityAccess_defaultLvl_timeout(udsServer.activeSecLvl->LevelTimeout);
+        }
+    }
+}
 #endif
+
+/**
+ * @brief Callback function called by the bootloader after completing a queued Utilities request
+ */
+void UDS_BL_UtilsReq_callBack(uint8_t status)
+{
+    UDS_REQ_t* request = UDS_peekNextRequest();
+    if(1U == status)
+    {/*request was a success*/
+        request->status = UDS_REQUEST_STATUS_SERVED_NOT_RESPONDED_TO;
+    }
+    else
+    {/*Request failed*/
+        /*TODO:This should call send a specific NRC?*/
+        request->status = UDS_REQUEST_GENERAL_ERROR;
+    }
+}
 #define STOP_SEC_UDS_SEC_CODE
 #include "uds_memMap.h"

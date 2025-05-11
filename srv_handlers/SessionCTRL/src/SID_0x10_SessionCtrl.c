@@ -46,38 +46,28 @@ static uint8_t UDS_FBL_notifyProgrammingSession(void)
 {
     /*implementation specific*/
     /*try to set the flag 5 times*/
-	//TODO: duplicate code
-
-	UDS_Utils_ReturnType ret;
-    uint8_t i=0;
-    for( ; i<UDS_FBL_MAX_NORIFTY_TRY_COUNT ; i++ )
+    UDS_Utils_FLAG flagsToBeSet[] = {PROGRAMMING_SESSION,FLASHING_IN_PROGRESS};
+    uint8_t numberFlagsTobeSet = 2U;
+    uint8_t i=0,currentFlagIndex=0;
+    for(;currentFlagIndex<numberFlagsTobeSet;currentFlagIndex++)
     {
-        if(FLASH_OK == modify_flag(PROGRAMMING_SESSION,FLAG_SET))
+        i = 0;
+        for( ; i<UDS_FBL_MAX_NORIFTY_TRY_COUNT ; i++ )
         {
-            break;
+            if(FLASH_OK == modify_flag(flagsToBeSet[currentFlagIndex],FLAG_SET))
+            {
+                break;
+            }
         }
-    }
-
-    for( ; i<UDS_FBL_MAX_NORIFTY_TRY_COUNT ; i++ )
-    {
-        if(FLASH_OK == modify_flag(FLASHING_IN_PROGRESS,FLAG_SET))
+        if(UDS_FBL_MAX_NORIFTY_TRY_COUNT <= i)
         {
-            break;
+            /*fail*/
+            return 0U;
         }
-    }
-
-    if(UDS_FBL_MAX_NORIFTY_TRY_COUNT <= i)
-    {
-        /*fail*/
-        return 0U;
-    }
-    if(UDS_FBL_MAX_NORIFTY_TRY_COUNT <= i)
-    {
-        /*fail*/
-        return 0U;
     }
     return 1U;
 }
+
 UDS_RESPONSE_SUPPRESSION_t SID_10_PositiveResponseHandler(UDS_Session_t* newSessionPtr,UDS_RES_t * response,UDS_REQ_t * request, UDS_Server_t * server)
 {
     /*start timeout*/

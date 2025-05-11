@@ -9,8 +9,26 @@
 #define START_SEC_UDS_SEC_CODE
 #include "uds_memMap.h"
 /*TODO : add transfer response parameter record?*/
+static uint8_t requestFlashBankVerification()
+{
+    BL_UDS_UtilsReq_MetaData_t BL_UtilsReq = {BL_UTIL_REQ_VALIDATE_FLASH_BANK,NULL,0U,1U};
+    return BLUtils_createNewRequest(&BL_UtilsReq);
+}
+
+UDS_RESPONSE_SUPPRESSION_t SID_37_PositiveResponseHandler(UDS_REQ_t *request,UDS_RES_t * response,UDS_Server_t * server)
+{
+    response->data[RESPONSE_SID_INDEX]=SID_37_POS_RES_CODE;
+    response->udsDataLen=1U;
+    request->status = UDS_REQUEST_STATUS_SERVED_NOT_RESPONDED_TO;
+    return UDS_NO_SUPPRESS_RESPONSE;
+}
+
 UDS_RESPONSE_SUPPRESSION_t SID_37_Handler(UDS_REQ_t *request,UDS_RES_t * response,UDS_Server_t * server)
 {
+    if(request->status == UDS_REQUEST_STATUS_SERVED_NOT_RESPONDED_TO)
+    {
+        return SID_37_PositiveResponseHandler(request,response,server);
+    }
     if(dataTransferStatus.dataRequestType == UDS_DATA_TRANSFER_NO_REQUEST || !dataTransferStatus.requestComplete)
     {
         handleNRC(request, response, UDS_NRC_0x24_REQUEST_SEQUENCE_ERROR, request->data[REQUEST_SID_INDEX]);
@@ -34,8 +52,18 @@ UDS_RESPONSE_SUPPRESSION_t SID_37_Handler(UDS_REQ_t *request,UDS_RES_t * respons
 #endif
     dataTransferStatus.currentLoopCounter = 0U;
     dataTransferStatus.requestComplete = 0U;
-    response->data[RESPONSE_SID_INDEX]=SID_37_POS_RES_CODE;
-    response->udsDataLen=1U;
+    /*TODO : Notify bootloader to to verify or make it a routine and just send a positive response*/
+    if(requestFlashBankVerification())
+    {
+        handleNRC(request, response, UDS_NRC_0x78_REQUEST_CORRECTLY_RECEIVED_RESPONSE_PENDING, request->data[REQUEST_SID_INDEX]);
+        return  UDS_NO_SUPPRESS_RESPONSE;
+    }
+    else
+    {
+        /*TODO: should this be busy or general reject*/
+        handleNRC(request, response, UDS_NRC_0x21_BUSY_REPEAT_REQUEST, request->data[REQUEST_SID_INDEX]);
+        return  UDS_NO_SUPPRESS_RESPONSE;
+    }
     return UDS_NO_SUPPRESS_RESPONSE;
 }
 #define STOP_SEC_UDS_SEC_CODE

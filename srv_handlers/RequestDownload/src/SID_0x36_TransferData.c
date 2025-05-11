@@ -6,24 +6,60 @@
  ****************************************************************************************************/
 
 #include "uds_DataTransfer_types.h"
-
-static uint8_t downloadData(UDS_REQ_t *request)
+static uint8_t requestFlashDownload(UDS_REQ_t *request)
 {
-    uint8_t i=0;
-    for(;i<UDS_TRANSFER_DOWNLOAD_MAX_WRITE_TRY_COUNT;i++)
-    {
-        //how do you know it's encoded as we expected? (add/copy)
-        if(FLASH_OK == parse_data(&request->data[2U],request->udsDataLen-2U))
-        {
-            return 1U;
-        }
+    /*Implementation specific*/
+    BL_UDS_UtilsReq_MetaData_t BL_UtilsReq = {BL_UTIL_REQ_PARSE_DATA,&request->data[2U],request->udsDataLen-2U,UDS_TRANSFER_DOWNLOAD_MAX_WRITE_TRY_COUNT};
+    return BLUtils_createNewRequest(&BL_UtilsReq);
+}
 
-    }
-    return 0U;
+UDS_RESPONSE_SUPPRESSION_t SID_36_PositiveResponseHandler(UDS_REQ_t *request,UDS_RES_t * response,UDS_Server_t * server)
+{
+    uint8_t currentBlockCounter = request->data[1U];
+    #if (UDS_DATA_TRANSFER_USE_VARIABLE_BLOCK_SIZE == 0U)
+            if(currentBlockCounter == dataTransferStatus.maxBlockCounter &&\
+                dataTransferStatus.currentLoopCounter == dataTransferStatus.maxLoopCounter)
+#elif (UDS_DATA_TRANSFER_USE_VARIABLE_BLOCK_SIZE == 1U)
+            //dataTransferStatus.remainingPayloadSize -= (request->udsDataLen- 2U);
+            if(dataTransferStatus.remainingPayloadSize == request->udsDataLen- 2U)
+#endif
+            {
+                dataTransferStatus.requestComplete = 1U;
+            }
+            else
+            {
+                /*TODO: check repeated transfer*/
+                if (currentBlockCounter == dataTransferStatus.expectedNextBlock - 1U)
+                {
+                    /*Nothing to be done*/
+                    /*TODO: make sure of this*/
+                }
+                else
+                {
+                    if (dataTransferStatus.expectedNextBlock == 0xFFU)
+                    {
+                        dataTransferStatus.expectedNextBlock = 0U;
+                        dataTransferStatus.currentLoopCounter++;
+                    }
+                    else
+                    {
+                        dataTransferStatus.expectedNextBlock++;
+                    }
+                }
+            }
+            //transferResponseParameterRecord?
+            response->data[RESPONSE_SID_INDEX] = SID_36_POS_RES_CODE;
+            response->data[1U] = currentBlockCounter;
+            response->udsDataLen = 2U;
+            return UDS_NO_SUPPRESS_RESPONSE;
 }
 
 UDS_RESPONSE_SUPPRESSION_t SID_36_Handler(UDS_REQ_t *request,UDS_RES_t * response,UDS_Server_t * server)
-{ 
+{
+    if(request->status == UDS_REQUEST_STATUS_SERVED_NOT_RESPONDED_TO)
+    {
+        return SID_36_PositiveResponseHandler(request,response,server);
+    }
     /*minumum length check for the transfer upload*/
     if(dataTransferStatus.dataRequestType==UDS_REQUEST_UPLOAD && request->udsDataLen != 2U)
     {   
@@ -57,7 +93,6 @@ UDS_RESPONSE_SUPPRESSION_t SID_36_Handler(UDS_REQ_t *request,UDS_RES_t * respons
         return UDS_NO_SUPPRESS_RESPONSE;
     }
 
-      
     if (dataTransferStatus.dataRequestType == UDS_REQUEST_DOWNLOAD)
     {
         if(request->udsDataLen- 2U > UDS_MAXIMUM_NUMBER_OF_BLOCK_LENGTH)
@@ -65,48 +100,14 @@ UDS_RESPONSE_SUPPRESSION_t SID_36_Handler(UDS_REQ_t *request,UDS_RES_t * respons
             handleNRC(request,response,UDS_NRC_0x31_REQUEST_OUT_OF_RANGE,request->data[REQUEST_SID_INDEX]);
             return UDS_NO_SUPPRESS_RESPONSE;
         }
-        if (0U == downloadData(request))
-        {
+        if (0U == requestFlashDownload(request))
+        {/*TODO:what should this NRC be*/
             handleNRC(request, response, UDS_NRC_0x72_GENERAL_PROGRAMMING_FAILURE, request->data[REQUEST_SID_INDEX]);
             return UDS_NO_SUPPRESS_RESPONSE;
         }
         else
-        {
-#if (UDS_DATA_TRANSFER_USE_VARIABLE_BLOCK_SIZE == 0U)
-            if(currentBlockCounter == dataTransferStatus.maxBlockCounter &&\
-                dataTransferStatus.currentLoopCounter == dataTransferStatus.maxLoopCounter)
-#elif (UDS_DATA_TRANSFER_USE_VARIABLE_BLOCK_SIZE == 1U)
-            dataTransferStatus.remainingPayloadSize -= (request->udsDataLen- 2U);
-            if(dataTransferStatus.remainingPayloadSize == 0U)
-#endif
-            {
-                dataTransferStatus.requestComplete = 1U;
-            }
-            else
-            {
-                /*TODO: check repeated transfer*/
-                if (currentBlockCounter == dataTransferStatus.expectedNextBlock - 1U)
-                {
-                    /*Nothing to be done*/
-                    /*TODO: make sure of this*/
-                }
-                else
-                {
-                    if (dataTransferStatus.expectedNextBlock == 0xFFU)
-                    {
-                        dataTransferStatus.expectedNextBlock = 0U;
-                        dataTransferStatus.currentLoopCounter++;
-                    }
-                    else
-                    {
-                        dataTransferStatus.expectedNextBlock++;
-                    }
-                }
-            }
-            //transferResponseParameterRecord?
-            response->data[RESPONSE_SID_INDEX] = SID_36_POS_RES_CODE;
-            response->data[1U] = currentBlockCounter;
-            response->udsDataLen = 2U;
+        {/*Request sent to bootloader succesfully*/
+            handleNRC(request, response, UDS_NRC_0x78_REQUEST_CORRECTLY_RECEIVED_RESPONSE_PENDING, request->data[REQUEST_SID_INDEX]);
             return UDS_NO_SUPPRESS_RESPONSE;
         }
     }
