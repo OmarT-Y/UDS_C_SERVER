@@ -275,12 +275,12 @@ void UDS_mainFunction(void)
                     handleNRC(request,&response,UDS_NRC_0x78_REQUEST_CORRECTLY_RECEIVED_RESPONSE_PENDING,request->data[REQUEST_SID_INDEX]);
                     if(1U == UDS_sendResponse(&response))
                     {
-                        /*response sent*/
-                        UDS_Request_dequeue();
+                        /*Yield Task for some time (some % of the p2 time of the current session)*/
                     }
                     else
                     {
                         /*This should never happen*/
+                        /*No action*/
                     }
                     break;
                 case UDS_REQUEST_STATUS_SERVED_NOT_RESPONDED_TO:
@@ -294,30 +294,27 @@ void UDS_mainFunction(void)
                         if(1U == UDS_sendResponse(&response))
                         {
                             /*response sent*/
-                            UDS_Request_dequeue();
-                        }
-                        else
-                        {
-                            request->status = UDS_REQUEST_STATUS_SERVED_NOT_RESPONDED_TO;
+                            request->status = UDS_REQUEST_STATUS_FINISHED;
                         }
                     }
                     else
                     {
                         /*Served but suppressed*/
-                        UDS_Request_dequeue();
+                        request->status = UDS_REQUEST_STATUS_FINISHED;
                     }
                     break;
                 case UDS_REQUEST_STATUS_NOT_SERVED:
                     if(UDS_NO_SUPPRESS_RESPONSE==UDS_handleRequest(request,&response))
                     {  
+                        if(request->status == UDS_REQUEST_STATUS_PENDING_NRC)
+                            break;
                         response.srcAdd = UDS_SERVER_FUNCTION_ADDRESS;
                         response.trgAdd = request->srcAdd;
                         response.msgType = request->msgType;
                         response.trgAddType = UDS_A_TA_PHYSICAL;
                         if(1U == UDS_sendResponse(&response))
                         {
-                            /*response sent*/
-                            UDS_Request_dequeue();
+                            request->status = UDS_REQUEST_STATUS_FINISHED;
                         }
                         else
                         {
@@ -326,8 +323,7 @@ void UDS_mainFunction(void)
                     }
                     else
                     {
-                        /*Served but suppressed*/
-                        UDS_Request_dequeue();
+                        request->status = UDS_REQUEST_STATUS_FINISHED;
                     }
                     break;
                 case UDS_REQUEST_STATUS_FINISHED:

@@ -6,7 +6,7 @@
  ****************************************************************************************************/
 
 #include "uds_session_cfg.h"
-
+extern uint8_t UDS_sendResponse(UDS_RES_t *response);
 
 /*Flag inficating if the boot loader is currently active*/
 #ifdef UDS_PROGRAMMING_SESSION_ENABLED
@@ -109,10 +109,9 @@ UDS_RESPONSE_SUPPRESSION_t SID_10_Handler(UDS_REQ_t * request, UDS_RES_t * respo
     if(NULL == newSessionPtr)
     {
         handleNRC(request,response,UDS_NRC_0x10_GENERAL_REJECT,request->data[REQUEST_SID_INDEX]);
-        /*TODO : check this*/
         return UDS_NO_SUPPRESS_RESPONSE;
     }
-    if(request->status == UDS_NRC_0x11_SERVICE_NOT_SUPPORTED)
+    if(request->status == UDS_REQUEST_STATUS_SERVED_NOT_RESPONDED_TO)
     {
         return SID_10_PositiveResponseHandler(newSessionPtr,response,request,server);
     }
@@ -125,7 +124,8 @@ UDS_RESPONSE_SUPPRESSION_t SID_10_Handler(UDS_REQ_t * request, UDS_RES_t * respo
             return UDS_NO_SUPPRESS_RESPONSE;
         }
 		handleNRC(request,response,UDS_NRC_0x78_REQUEST_CORRECTLY_RECEIVED_RESPONSE_PENDING,request->data[REQUEST_SID_INDEX]);
-        //UDS_PROGRAMMING_RESET_FUNCTION(); //TODO: Must be done through another service request??
+        UDS_sendResponse(response);
+        UDS_PROGRAMMING_RESET_FUNCTION(); 
         return UDS_NO_SUPPRESS_RESPONSE;
     }
     else

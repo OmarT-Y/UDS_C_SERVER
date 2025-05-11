@@ -90,7 +90,7 @@ typedef enum
  */
 typedef struct 
 {
-    UDS_RequestStatus_t    status;
+    UDS_RequestStatus_t     status;
     UDS_A_MType_t           msgType;
     UDS_A_ADD_t             srcAdd;
     UDS_A_ADD_t             trgAdd;
@@ -103,10 +103,11 @@ typedef struct
 /** 
  * @brief  UDS Request Message
  */
-typedef UDS_SDU_t UDS_REQ_t;
+typedef UDS_SDU_t UDS_REQ_t;    
 /**
  * @brief UDS Response Message
  */
+//reesponse doesn't have status
 typedef UDS_SDU_t UDS_RES_t;
 
 /*

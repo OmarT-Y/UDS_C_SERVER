@@ -140,17 +140,9 @@ static uint8_t UDS_req_q_new_entry(UDS_REQ_t* newReq,uint8_t index)
     }
     else
     {
-        /*copy into the array index*/
-        UDS_requests_Q[index].msgType       = newReq->msgType;
-        UDS_requests_Q[index].remoteAdd     = newReq->remoteAdd;
-        UDS_requests_Q[index].srcAdd        = newReq->srcAdd;
-        UDS_requests_Q[index].trgAdd        = newReq->trgAdd;
-        UDS_requests_Q[index].trgAddType    = newReq->trgAddType;
-        UDS_requests_Q[index].udsDataLen    = newReq->udsDataLen;
-        UDS_requests_Q[index].data          = dataPtr;
-        for(i =0;i<newReq->udsDataLen;i++)
+        for (i = 0; i < sizeof(UDS_REQ_t); i++)
         {
-            dataPtr[i]=newReq->data[i];
+            ((uint8_t*)&UDS_requests_Q[index])[i] = ((uint8_t*)newReq)[i];
         }
         return 1U;
     }
