@@ -42,7 +42,7 @@ void clear_BootLoader_ActiveFlag()
 #define START_SEC_UDS_SEC_CODE
 #include "uds_memMap.h"
 
-static uint8_t UDS_FBL_notifyProgrammingSession(void)
+static uint8_t UDS_FBL_notifyProgrammingSession(UDS_Server_t * server)
 {
     /*implementation specific*/
     /*try to set the flag 5 times*/
@@ -65,6 +65,19 @@ static uint8_t UDS_FBL_notifyProgrammingSession(void)
             return 0U;
         }
     }
+    i = 0;
+        for( ; i<UDS_FBL_MAX_NORIFTY_TRY_COUNT ; i++ )
+        {
+            if(FLASH_OK == modify_flag(UDS_LAST_SECURITY_LEVEL,server->activeSecLvl->SecurityLvlID))
+            {
+                break;
+            }
+        }
+        if(UDS_FBL_MAX_NORIFTY_TRY_COUNT <= i)
+        {
+            /*fail*/
+            return 0U;
+        }
     return 1U;
 }
 
@@ -108,7 +121,7 @@ UDS_RESPONSE_SUPPRESSION_t SID_10_Handler(UDS_REQ_t * request, UDS_RES_t * respo
 #ifdef UDS_PROGRAMMING_SESSION_ENABLED
     if(newSession == UDS_PROGRAMMING_SESSION_ID && bootLoaderActiveFlag == 0)
     {
-        if(0U == UDS_FBL_notifyProgrammingSession())
+        if(0U == UDS_FBL_notifyProgrammingSession(server))
         {
             handleNRC(request,response,UDS_NRC_0x72_GENERAL_PROGRAMMING_FAILURE,request->data[REQUEST_SID_INDEX]);
             return UDS_NO_SUPPRESS_RESPONSE;
