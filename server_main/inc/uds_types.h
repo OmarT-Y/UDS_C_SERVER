@@ -67,13 +67,15 @@ typedef enum
  * @param UDS_REQUEST_STATUS_PENDING_NRC The server sent a respond pending NRC for this request and is waiting for some action
  * @param UDS_REQUEST_STATUS_SERVED_NOT_REPONDED_TO The request is served and response is ready to be sent but not yet sent
  * @param UDS_REQUEST_STATUS_NOT_SERVED request hasnt been served yet
+ * @param UDS_REQUEST_GENERAL_ERROR General programming error
  */
 typedef enum
 {
     UDS_REQUEST_STATUS_FINISHED,
     UDS_REQUEST_STATUS_PENDING_NRC,
     UDS_REQUEST_STATUS_SERVED_NOT_RESPONDED_TO,
-    UDS_REQUEST_STATUS_NOT_SERVED
+    UDS_REQUEST_STATUS_NOT_SERVED,
+    UDS_REQUEST_GENERAL_ERROR
 }UDS_RequestStatus_t;
 
 /**
