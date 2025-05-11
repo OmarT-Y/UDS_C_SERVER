@@ -16,7 +16,8 @@
 #define UDS_NUM_OF_ROUTINES 1U
 
 /*Routine FF00 Functions*/
-uint8_t rid_0001_start(uint8_t* data,uint8_t dataLen);
+uint8_t rid_FF00_start(uint8_t* data,uint8_t dataLen);
+uint8_t rid_FF00_checkRes(uint8_t* data,uint8_t dataLen);
 
 /**************************************************************************End of Generation**************************************************************************/
 

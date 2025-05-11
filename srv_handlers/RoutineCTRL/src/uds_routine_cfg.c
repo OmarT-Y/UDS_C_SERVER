@@ -29,13 +29,13 @@
  UDS_RID_RECORD_t UDS_Routines[UDS_NUM_OF_ROUTINES] =
  {
      {
-         .rid = 0xFF00,
+         .rid = 0xff00,
          .optionRecordSize = 0U,
          .isRestartable = 0U,
          .status = ROUTINE_STATUS_STOPPED,
-         .routineStartHandler = rid_0001_start,
+         .routineStartHandler = rid_FF00_start,
          .routineStopHandler = NULL,
-         .routineCheckResultsHandler = NULL,
+         .routineCheckResultsHandler = rid_FF00_checkRes,
          .SupportivityStruct = &rid_0001_supportivity
      }
  };

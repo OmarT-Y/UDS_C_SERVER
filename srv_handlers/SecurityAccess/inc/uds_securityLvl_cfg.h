@@ -25,7 +25,7 @@ void UDS_securityAccess_attemptCount_timeout(uint16_t);
 
 
 #define SECURITY_LEVEL_0x00_ID                                       0x0
-#define SECURITY_LEVEL_0x00_SUPPORTED_SID_MASK                       {0x0, 0x0, 0x0, 0x0, 0x0, 0x0}
+#define SECURITY_LEVEL_0x00_SUPPORTED_SID_MASK                       {0x0, 0x80, 0x0, 0x0, 0x0, 0x0}
 #define SECURITY_LEVEL_0x00_SEED_LENGTH                              2U
 #define SECURITY_LEVEL_0x00_KEY_LENGTH                               2U
 #define SECURITY_LEVEL_0x00_TIMEOUT                                  100000UL

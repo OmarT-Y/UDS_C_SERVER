@@ -13,7 +13,7 @@ void* UDS_BinaryID_Search(const void* searchArray, uint8_t blockSize, uint16_t a
     uint16_t left = 0, right = arrayLen - 1;
     const uint8_t* basePtr = (const uint8_t*)searchArray;
 
-    while (left <= right)
+    while (left <= right && left < arrayLen && right < arrayLen)
     {
         uint16_t mid = left + ((right - left) >> 1);
         const uint8_t* midPtr = basePtr + (mid * blockSize);

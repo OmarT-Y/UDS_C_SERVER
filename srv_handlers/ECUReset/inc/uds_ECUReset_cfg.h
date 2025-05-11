@@ -24,8 +24,8 @@ uint8_t UDS_sendResponse(UDS_RES_t* response);
 #define UDS_HARD_RESET_ID                                      0x01
 #define UDS_NUMBER_OF_SUPPORTED_RESETS                         1
 
-extern void dah_yb2a_asm_el_function();
-#define UDS_RESET_0x01_FUNCTION            dah_yb2a_asm_el_function                     
+extern void reset_ecu();
+#define UDS_RESET_0x01_FUNCTION                                reset_ecu                         
 
 /*For each Reset a function prototype should be generated*/
 /*************************************************************************End Of Generation*************************************************************************/

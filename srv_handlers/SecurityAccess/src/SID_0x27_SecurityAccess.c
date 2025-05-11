@@ -35,7 +35,7 @@ UDS_RESPONSE_SUPPRESSION_t SID_27_Handler(UDS_REQ_t * request, UDS_RES_t * respo
         return UDS_NO_SUPPRESS_RESPONSE;
     }
     uint8_t requestType;
-    uint8_t level = (uint8_t)((request->data[1U])/2U) + 1U;
+    uint8_t level = (uint8_t)((request->data[1U] - 1U)/2U) + 1U;
     UDS_SecurityLevel_t* securityLevelRecord = (UDS_SecurityLevel_t*)UDS_BinaryID_Search(securityLevels,sizeof(UDS_SecurityLevel_t),UDS_NUMBER_OF_SECURITY_LEVELS,&(level),1);
     if(NULL == securityLevelRecord)
     {
@@ -91,6 +91,7 @@ UDS_RESPONSE_SUPPRESSION_t SID_27_Handler(UDS_REQ_t * request, UDS_RES_t * respo
                 response->data[2U+i] = seedPtr[i];
             }
             response->udsDataLen = 2U + securityLevelRecord->seedLen;
+            return UDS_NO_SUPPRESS_RESPONSE;
         }
         else
         {
@@ -156,7 +157,7 @@ UDS_RESPONSE_SUPPRESSION_t SID_27_Handler(UDS_REQ_t * request, UDS_RES_t * respo
 
 const UDS_SubFunctionSupportivity_t* SID_27_getSubFunctSuppStruct(uint8_t subFunction)
 {
-    uint8_t securityLevel = (uint8_t)(subFunction/2) + 1;
+    uint8_t securityLevel = (uint8_t)((subFunction - 1)/2) + 1;
     UDS_SecurityLevel_t* secLvlRecord = (UDS_SecurityLevel_t*)UDS_BinaryID_Search((void*)securityLevels,sizeof(UDS_SecurityLevel_t),UDS_NUMBER_OF_SECURITY_LEVELS,&securityLevel,1U);
     
     return NULL==secLvlRecord?NULL:secLvlRecord->SupportivityStruct;

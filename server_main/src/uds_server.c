@@ -112,7 +112,6 @@ static UDS_RESPONSE_SUPPRESSION_t  UDS_handleRequest(UDS_REQ_t* request, UDS_RES
     }
 #endif
     /*Check if the SID is supported*/
-    //TODO: why pass UDS_NUMBER_OF_SUPPORTED_SERVICES where you could deduce it from the array size
     UDS_SID_RECORD_t* sid_record = (UDS_SID_RECORD_t*)UDS_BinaryID_Search(UDS_a_supportedSID_Record,sizeof(UDS_SID_RECORD_t),UDS_NUMBER_OF_SUPPORTED_SERVICES,&(request->data[0]),1);
     if(NULL==sid_record)
     {
@@ -168,7 +167,7 @@ static UDS_RESPONSE_SUPPRESSION_t  UDS_handleRequest(UDS_REQ_t* request, UDS_RES
     if(sid_record->sid == SID_31_ROUTINE_CTRL)
     {
         /*invoke the service handler*/
-        sid_record->handler(request,response,&udsServer);
+        return sid_record->handler(request,response,&udsServer);
     }
 #endif
     /*check if the service has sub function*/
@@ -227,24 +226,6 @@ static UDS_RESPONSE_SUPPRESSION_t  UDS_handleRequest(UDS_REQ_t* request, UDS_RES
         return sid_record->handler(request,response,&udsServer);
     }
 }
-
-void UDS_defaultSessionResetCallBack()
-{
-    if(udsServer.activeSession->SessionID != UDS_DEFAULT_SESSION_ID)
-    {
-        udsServer.activeSession = UDS_DEFAULT_SESSION_PTR;
-    }
-}
-
-#ifdef UDS_SECURITY_LEVEL_SUPPORTED
-void UDS_defaultSecurityLevelResetCallBack()
-{
-    if(udsServer.activeSecLvl->SecurityLvlID != SECURITY_LVL_DEFAULT_ID)
-    {
-        udsServer.activeSecLvl = SECURITY_LVL_DEFAULT_STRUCT_PTR;
-    }
-}
-#endif
 void UDS_RequestIndication(UDS_REQ_t* request)
 {
     if(UDS_SERVER_QUEUE_MAX_NUMBER_OF_REQS == UDS_readyReqCheck())
@@ -279,38 +260,108 @@ void UDS_mainFunction(void)
 {
    if(UDS_readyReqCheck()>0U)
    {
-       uint8_t responseData[UDS_MAX_RESPONSE_DATA_LENGTH] = {0U};
-       UDS_RES_t response =
-       {
+        UDS_REQ_t* request = UDS_peekNextRequest();
+        uint8_t responseData[UDS_MAX_RESPONSE_DATA_LENGTH] = {0U};
+        UDS_RES_t response =
+        {
            .data       = responseData
-       };
-       UDS_REQ_t* request = UDS_peekNextRequest();
-       if(NULL != request)
-       {
-           if(UDS_NO_SUPPRESS_RESPONSE==UDS_handleRequest(request,&response))
-           {  
-               response.srcAdd = UDS_SERVER_FUNCTION_ADDRESS;
-               response.trgAdd = request->srcAdd;
-               response.msgType = request->msgType;
-               response.trgAddType = UDS_A_TA_PHYSICAL;
-               if(1U == UDS_sendResponse(&response))
-               {
-                    /*response sent*/
+        };
+        if(NULL != request)
+        {
+            UDS_SID_RECORD_t* sid_record;
+            switch(request->status)
+            {
+                case UDS_REQUEST_STATUS_PENDING_NRC:
+                    handleNRC(request,&response,UDS_NRC_0x78_REQUEST_CORRECTLY_RECEIVED_RESPONSE_PENDING,request->data[REQUEST_SID_INDEX]);
+                    if(1U == UDS_sendResponse(&response))
+                    {
+                        /*response sent*/
+                        UDS_Request_dequeue();
+                    }
+                    else
+                    {
+                        /*This should never happen*/
+                    }
+                    break;
+                case UDS_REQUEST_STATUS_SERVED_NOT_RESPONDED_TO:
+                    sid_record = (UDS_SID_RECORD_t*)UDS_BinaryID_Search(UDS_a_supportedSID_Record,sizeof(UDS_SID_RECORD_t),UDS_NUMBER_OF_SUPPORTED_SERVICES,&(request->data[0]),1);
+                    if(UDS_NO_SUPPRESS_RESPONSE==sid_record->handler(request,&response,&udsServer))
+                    {
+                        response.srcAdd = UDS_SERVER_FUNCTION_ADDRESS;
+                        response.trgAdd = request->srcAdd;
+                        response.msgType = request->msgType;
+                        response.trgAddType = UDS_A_TA_PHYSICAL;
+                        if(1U == UDS_sendResponse(&response))
+                        {
+                            /*response sent*/
+                            UDS_Request_dequeue();
+                        }
+                        else
+                        {
+                            request->status = UDS_REQUEST_STATUS_SERVED_NOT_RESPONDED_TO;
+                        }
+                    }
+                    else
+                    {
+                        /*Served but suppressed*/
+                        UDS_Request_dequeue();
+                    }
+                    break;
+                case UDS_REQUEST_STATUS_NOT_SERVED:
+                    if(UDS_NO_SUPPRESS_RESPONSE==UDS_handleRequest(request,&response))
+                    {  
+                        response.srcAdd = UDS_SERVER_FUNCTION_ADDRESS;
+                        response.trgAdd = request->srcAdd;
+                        response.msgType = request->msgType;
+                        response.trgAddType = UDS_A_TA_PHYSICAL;
+                        if(1U == UDS_sendResponse(&response))
+                        {
+                            /*response sent*/
+                            UDS_Request_dequeue();
+                        }
+                        else
+                        {
+                            request->status = UDS_REQUEST_STATUS_SERVED_NOT_RESPONDED_TO;
+                        }
+                    }
+                    else
+                    {
+                        /*Served but suppressed*/
+                        UDS_Request_dequeue();
+                    }
+                    break;
+                case UDS_REQUEST_STATUS_FINISHED:
                     UDS_Request_dequeue();
-               }
-               else
-               {
-                    /*No action needed*/
-                    /*dont dequeue the request*/
-               }
-           }
-           else
-           {
-        	   UDS_Request_dequeue();
-           }
+                    break;
+                default:
+                	break;
+                    /*ERROR*/
+            }        
+       }
+       else
+       {
+            /*ERROR*/
        }
    }
 }
 
+/*Callbacks*/
+void UDS_defaultSessionResetCallBack()
+{
+    if(udsServer.activeSession->SessionID != UDS_DEFAULT_SESSION_ID)
+    {
+        udsServer.activeSession = UDS_DEFAULT_SESSION_PTR;
+    }
+}
+
+#ifdef UDS_SECURITY_LEVEL_SUPPORTED
+void UDS_defaultSecurityLevelResetCallBack()
+{
+    if(udsServer.activeSecLvl->SecurityLvlID != SECURITY_LVL_DEFAULT_ID)
+    {
+        udsServer.activeSecLvl = SECURITY_LVL_DEFAULT_STRUCT_PTR;
+    }
+}
+#endif
 #define STOP_SEC_UDS_SEC_CODE
 #include "uds_memMap.h"

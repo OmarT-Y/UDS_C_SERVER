@@ -39,7 +39,7 @@ const UDS_ResetType_t SupportedResets[UDS_NUMBER_OF_SUPPORTED_RESETS] =
     {
         /*.resetFunctionPtr = hardReset,*/
         .ResetID = UDS_HARD_RESET_ID,
-//        .resetFunctionPtr = UDS_RESET_0x01_FUNCTION,
+        .resetFunctionPtr = UDS_RESET_0x01_FUNCTION,
         .SupportivityStruct = &reset_01_supportivity
     }
 };

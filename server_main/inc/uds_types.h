@@ -21,7 +21,7 @@ TODO : include the std boolean type*/
 #define REQUEST_SUB_FUNCTION_INDEX                      1U
 
 #define CHECK_REQUEST_SUPPRESS_BIT(request)     (request->data[1] & (1<<7))
-#define CHECK_ARRAY_BIT_OVER_32(array,bitNum)   ((array[(bitNum)>>5]) & (1<<((bitNum%32))))
+#define CHECK_ARRAY_BIT_OVER_32(array,bitNum)   ((array[(bitNum)>>5]) & (1<<(((bitNum)%32))))
 
 
 
@@ -59,9 +59,27 @@ typedef enum
     UDS_A_TA_FUNCTIONAL
 }UDS_A_TA_TYPE_t;
 
+
+
+/**
+ * @brief UDS Reuqest Status type
+ * @param UDS_REQUEST_STATUS_FINISHED The uds is done served and responed to and should be deleted
+ * @param UDS_REQUEST_STATUS_PENDING_NRC The server sent a respond pending NRC for this request and is waiting for some action
+ * @param UDS_REQUEST_STATUS_SERVED_NOT_REPONDED_TO The request is served and response is ready to be sent but not yet sent
+ * @param UDS_REQUEST_STATUS_NOT_SERVED request hasnt been served yet
+ */
+typedef enum
+{
+    UDS_REQUEST_STATUS_FINISHED,
+    UDS_REQUEST_STATUS_PENDING_NRC,
+    UDS_REQUEST_STATUS_SERVED_NOT_RESPONDED_TO,
+    UDS_REQUEST_STATUS_NOT_SERVED
+}UDS_RequestStatus_t;
+
 /**
  * @brief UDS SDU Block
  * @note Parameters ordered according to ISO Standard 
+ * @param status The stauts of the request/response
  * @param msgType SDU message type
  * @param srcAdd Source Address
  * @param trgAdd Target Address
@@ -72,13 +90,14 @@ typedef enum
  */
 typedef struct 
 {
-    UDS_A_MType_t       msgType;
-    UDS_A_ADD_t         srcAdd;
-    UDS_A_ADD_t         trgAdd;
-    UDS_A_TA_TYPE_t     trgAddType;
-    UDS_A_ADD_t         remoteAdd;
-    uint16_t            udsDataLen;
-    uint8_t*            data;
+    UDS_RequestStatus_t    status;
+    UDS_A_MType_t           msgType;
+    UDS_A_ADD_t             srcAdd;
+    UDS_A_ADD_t             trgAdd;
+    UDS_A_TA_TYPE_t         trgAddType;
+    UDS_A_ADD_t             remoteAdd;
+    uint16_t                udsDataLen;
+    uint8_t*                data;
 }UDS_SDU_t;
 
 /** 

@@ -50,17 +50,17 @@ UDS_SID_RECORD_t UDS_a_supportedSID_Record[] =
 				.subfuncSupportivityStructGet           = NULL
 #endif
 		},
-		//    {
-		//        .sid                        = SID_27_SECURITY_ACCESS,
-		//        .minLen                     = SID_27_SECURITY_ACCESS_MIN_LEN,
-		//        .handler                    = SID_27_Handler,
-		//        .hasSubFunc                 = SID_27_SECURITY_ACCESS_HAS_SUB_FUNC,
-		//#if (SID_27_SECURITY_ACCESS_HAS_SUB_FUNC==1)
-		//        .subfuncSupportivityStructGet           = SID_27_getSubFunctSuppStruct
-		//#else
-		//        .subfuncSupportivityStructGet           = NULL
-		//#endif
-		//    },
+		   {
+		       .sid                        = SID_27_SECURITY_ACCESS,
+		       .minLen                     = SID_27_SECURITY_ACCESS_MIN_LEN,
+		       .handler                    = SID_27_Handler,
+		       .hasSubFunc                 = SID_27_SECURITY_ACCESS_HAS_SUB_FUNC,
+		#if (SID_27_SECURITY_ACCESS_HAS_SUB_FUNC==1)
+		       .subfuncSupportivityStructGet           = SID_27_getSubFunctSuppStruct
+		#else
+		       .subfuncSupportivityStructGet           = NULL
+		#endif
+		   },
 		{
 				.sid                        = SID_2E_WRITE_DID,
 				.minLen                     = SID_2E_WRITE_DID_MIN_LEN,

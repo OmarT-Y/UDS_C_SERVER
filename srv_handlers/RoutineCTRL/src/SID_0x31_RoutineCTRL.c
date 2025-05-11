@@ -57,8 +57,8 @@ UDS_RESPONSE_SUPPRESSION_t SID_31_Handler(UDS_REQ_t *request, UDS_RES_t *respons
         handleNRC(request, response, UDS_NRC_0x13_INCORRCT_MESSAGE_LENGTH_OR_INVALID_FORMAT, request->data[REQUEST_SID_INDEX]);
         return UDS_NO_SUPPRESS_RESPONSE;
     }
-    /*parse the Routien ID*/
-    uint16_t routine_id = (request->data[2U] << 8U) & request->data[3U];
+    /*parse the Routine ID*/
+    uint16_t routine_id = (request->data[2U] << 8U) | request->data[3U];
     /*Get the routine record instance*/
     UDS_RID_RECORD_t* routine_record = (UDS_RID_RECORD_t*)UDS_BinaryID_Search((void*)UDS_Routines,sizeof(UDS_RID_RECORD_t),UDS_NUM_OF_ROUTINES,(uint8_t*)(&routine_id),2U);
     switch (checkRID(server->activeSession->SessionID,server->activeSecLvl->SecurityLvlID,routine_record))

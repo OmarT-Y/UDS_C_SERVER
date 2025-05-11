@@ -13,7 +13,7 @@ extern void uds_secLvl_attempt_callBack();
  #define START_SEC_UDS_SEC_CONST_DATA
  #include "uds_memMap.h"
 
-static const uint8_t secLvl_0x00_suppSessions[] = {1, 2};
+static const uint8_t secLvl_0x00_suppSessions[] = {0, 1};
 #ifdef UDS_SECURITY_LEVEL_SUPPORTED 
 static const uint8_t secLvl_0x00_suppSecLvls[] = {1, 2};
 #endif
@@ -28,9 +28,9 @@ static const UDS_SubFunctionSupportivity_t secLvl_0x00_supportivity =
 #endif
 };
 
-static const uint8_t secLvl_0x01_suppSessions[] = {1, 2};
+static const uint8_t secLvl_0x01_suppSessions[] = {0, 1};
 #ifdef UDS_SECURITY_LEVEL_SUPPORTED 
-static const uint8_t secLvl_0x01_suppSecLvls[] = {1, 2};
+static const uint8_t secLvl_0x01_suppSecLvls[] = {0, 1};
 #endif
 static const UDS_SubFunctionSupportivity_t secLvl_0x01_supportivity = 
 {

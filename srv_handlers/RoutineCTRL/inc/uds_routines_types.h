@@ -60,7 +60,7 @@ typedef UDS_RoutineStatus_t (*UDS_checkRoutineResultsPtr_t) (uint8_t *,uint8_t);
 */
 typedef struct 
 {
-   uint8_t                                         rid;
+   uint16_t                                        rid;
    uint8_t                                         optionRecordSize;  
    uint8_t                                         isRestartable;
    UDS_RoutineStatus_t                             status;
