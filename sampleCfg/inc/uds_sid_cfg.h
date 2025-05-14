@@ -169,7 +169,7 @@ const UDS_SubFunctionSupportivity_t* SID_31_getSubFunctSuppStruct(uint8_t subFun
 
 /* Service parameters for SID 0x11 */
 #define SID_11_ECU_RESET		                                0x11
-#define SID_11_POS_RES_CODE                                     0x40
+#define SID_11_POS_RES_CODE                                     0x51
 #define SID_11_ECU_RESET_MIN_LEN		                        0x2
 #define SID_11_ECU_RESET_HAS_SUB_FUNC		                    1
 #define SID_11_ECU_RESET_NUMBER_OF_SUPPORTED_SUB_FUNC           0x0

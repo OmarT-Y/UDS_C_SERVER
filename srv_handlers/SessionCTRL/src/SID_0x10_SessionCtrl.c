@@ -128,7 +128,7 @@ UDS_RESPONSE_SUPPRESSION_t SID_10_Handler(UDS_REQ_t * request, UDS_RES_t * respo
         }
 		handleNRC(request,response,UDS_NRC_0x78_REQUEST_CORRECTLY_RECEIVED_RESPONSE_PENDING,request->data[REQUEST_SID_INDEX]);
         UDS_sendResponse(response);
-        UDS_PROGRAMMING_RESET_FUNCTION(); 
+        UDS_PROGRAMMING_RESET_FUNCTION();
         return UDS_NO_SUPPRESS_RESPONSE;
     }
     else

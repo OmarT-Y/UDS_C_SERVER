@@ -5,13 +5,13 @@
  *  Modification Logs   : 27-2-2025 File Creation
  ****************************************************************************************************/
 #include "uds_DataTransfer_types.h"
-
+extern void UDS_BL_UtilsReq_callBack(uint8_t status);
 #define START_SEC_UDS_SEC_CODE
 #include "uds_memMap.h"
 /*TODO : add transfer response parameter record?*/
 static uint8_t requestFlashBankVerification()
 {
-    BL_UDS_UtilsReq_MetaData_t BL_UtilsReq = {BL_UTIL_REQ_VALIDATE_FLASH_BANK,NULL,0U,1U};
+    BL_UDS_UtilsReq_MetaData_t BL_UtilsReq = {UDS_BL_UtilsReq_callBack,BL_UTILS_REQ_VALIDATE_FLASH_BANK,NULL,0U,1U};
     return BLUtils_createNewRequest(&BL_UtilsReq);
 }
 

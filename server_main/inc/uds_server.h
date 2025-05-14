@@ -53,4 +53,11 @@ void UDS_defaultSecurityLevelResetCallBack();
  */
 uint8_t UDS_sendResponse(UDS_RES_t *response);
 
+
+/**
+ * @brief This is the main function for the uds
+ * @return True/False if the uds function should be paused
+ */
+uint8_t UDS_mainFunction(void);
+
 #endif

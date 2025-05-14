@@ -6,10 +6,11 @@
  ****************************************************************************************************/
 
 #include "uds_DataTransfer_types.h"
+extern void UDS_BL_UtilsReq_callBack(uint8_t status);
 static uint8_t requestFlashDownload(UDS_REQ_t *request)
 {
     /*Implementation specific*/
-    BL_UDS_UtilsReq_MetaData_t BL_UtilsReq = {BL_UTIL_REQ_PARSE_DATA,&request->data[2U],request->udsDataLen-2U,UDS_TRANSFER_DOWNLOAD_MAX_WRITE_TRY_COUNT};
+    BL_UDS_UtilsReq_MetaData_t BL_UtilsReq = {UDS_BL_UtilsReq_callBack,BL_UTILS_REQ_PARSE_DATA,&request->data[2U],request->udsDataLen-2U,UDS_TRANSFER_DOWNLOAD_MAX_WRITE_TRY_COUNT};
     return BLUtils_createNewRequest(&BL_UtilsReq);
 }
 
@@ -20,8 +21,8 @@ UDS_RESPONSE_SUPPRESSION_t SID_36_PositiveResponseHandler(UDS_REQ_t *request,UDS
             if(currentBlockCounter == dataTransferStatus.maxBlockCounter &&\
                 dataTransferStatus.currentLoopCounter == dataTransferStatus.maxLoopCounter)
 #elif (UDS_DATA_TRANSFER_USE_VARIABLE_BLOCK_SIZE == 1U)
-            //dataTransferStatus.remainingPayloadSize -= (request->udsDataLen- 2U);
-            if(dataTransferStatus.remainingPayloadSize == request->udsDataLen- 2U)
+            dataTransferStatus.remainingPayloadSize -= (request->udsDataLen- 2U);
+            if(dataTransferStatus.remainingPayloadSize == 0)
 #endif
             {
                 dataTransferStatus.requestComplete = 1U;

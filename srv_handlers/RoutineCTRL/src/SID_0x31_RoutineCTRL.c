@@ -51,6 +51,10 @@ static RID_SUPPORTIVITY_RES_t checkRID(uint8_t activeSessionID,uint8_t activeSec
 
 UDS_RESPONSE_SUPPRESSION_t SID_31_Handler(UDS_REQ_t *request, UDS_RES_t *response, UDS_Server_t *server)
 {
+    if(request->status == UDS_REQUEST_STATUS_SERVED_NOT_RESPONDED_TO)
+    {
+        return UDS_SUPPRESS_RESPONSE;
+    }
     /*Min length check*/
     if (request->udsDataLen < 4U)
     {
@@ -67,11 +71,11 @@ UDS_RESPONSE_SUPPRESSION_t SID_31_Handler(UDS_REQ_t *request, UDS_RES_t *respons
             if(request->trgAddType==UDS_A_TA_FUNCTIONAL)
             {
                 handleNRC(request,response,UDS_NRC_0x31_REQUEST_OUT_OF_RANGE,request->data[REQUEST_SID_INDEX]);
-                return UDS_NO_SUPPRESS_RESPONSE;
+                return UDS_SUPPRESS_RESPONSE;    
             }
             else
             {
-                return UDS_SUPPRESS_RESPONSE;    
+                return UDS_NO_SUPPRESS_RESPONSE;
             }
             break;
         case RID_NOT_SUPPORTED_IN_ACTIVE_SESSION:
@@ -175,15 +179,11 @@ UDS_RESPONSE_SUPPRESSION_t SID_31_Handler(UDS_REQ_t *request, UDS_RES_t *respons
         UDS_RoutineStatus_t newStatus = routine_record->routineCheckResultsHandler(dataRecordPtr,dataRecordLen);
         switch(newStatus)
         {
+            case ROUTINE_STATUS_STOPPED:
+            handleNRC(request, response, UDS_NRC_0x24_REQUEST_SEQUENCE_ERROR, request->data[REQUEST_SID_INDEX]);
+            return UDS_NO_SUPPRESS_RESPONSE;
+            break;
             case ROUTINE_STATUS_RUNNING:
-                handleNRC(request, response, UDS_NRC_0x24_REQUEST_SEQUENCE_ERROR, request->data[REQUEST_SID_INDEX]);
-                return UDS_NO_SUPPRESS_RESPONSE;
-                break;
-                break;
-                case ROUTINE_STATUS_STOPPED:
-                handleNRC(request, response, UDS_NRC_0x24_REQUEST_SEQUENCE_ERROR, request->data[REQUEST_SID_INDEX]);
-                return UDS_NO_SUPPRESS_RESPONSE;
-                break;
             case ROUTINE_STATUS_COMPLETED_SUCCESS:
             case ROUTINE_STATUS_TIMEOUT:
             case ROUTINE_STATUS_COMPLETED_FAILURE:
@@ -194,6 +194,7 @@ UDS_RESPONSE_SUPPRESSION_t SID_31_Handler(UDS_REQ_t *request, UDS_RES_t *respons
                 response->data[3U] = request->data[3U];
                 response->data[4U] = newStatus;
                 response->udsDataLen = 5U;
+                return UDS_NO_SUPPRESS_RESPONSE;
                 break;
             default:
                 break;

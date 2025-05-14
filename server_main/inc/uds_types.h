@@ -112,7 +112,7 @@ typedef UDS_SDU_t UDS_REQ_t;
 //reesponse doesn't have status
 typedef UDS_SDU_t UDS_RES_t;
 
-/*
+/**
  * @brief Structure to hold information about the funciton being supported in which session and which security levels
  * @param supportedSessions Pointer to an array of sessions that support The function to this session
  * @param supportedSessionsLen Length of the array of sessions 
@@ -182,7 +182,6 @@ typedef uint8_t (*securityKeyCheckFuncPtr)(const uint8_t* key);
     securityKeyCheckFuncPtr                         keyCheckFunc;
     uint16_t                                        LevelTimeout;
  }UDS_SecurityLevel_t;
-
 /** 
  * @brief UDS Server context
  * @param activeSession current active session

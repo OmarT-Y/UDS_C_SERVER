@@ -20,12 +20,12 @@
   */
   typedef enum
  {
-    ROUTINE_STATUS_NOT_STARTED, 
+    ROUTINE_STATUS_NOT_STARTED = 0, 
     ROUTINE_STATUS_RUNNING,         
     ROUTINE_STATUS_COMPLETED_SUCCESS,
     ROUTINE_STATUS_COMPLETED_FAILURE,
     ROUTINE_STATUS_STOPPED,          
-    ROUTINE_STATUS_TIMEOUT      
+    ROUTINE_STATUS_TIMEOUT    
  }UDS_RoutineStatus_t;
 /**
  * @brief Pointer to Routine Start function

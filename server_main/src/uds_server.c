@@ -21,7 +21,7 @@ static UDS_Server_t udsServer =
     .activeSession  = UDS_DEFAULT_SESSION_PTR
 #ifdef UDS_SECURITY_LEVEL_SUPPORTED
     ,
-    .activeSecLvl   = SECURITY_LVL_DEFAULT_STRUCT_PTR
+    .activeSecLvl   = SECURITY_LVL_DEFAULT_STRUCT_PTR,
 #endif
 };
 
@@ -259,11 +259,11 @@ void UDS_RequestIndication(UDS_REQ_t* request)
     }
 }
 
-void UDS_mainFunction(void)
+uint8_t UDS_mainFunction(void)
 {
-   if(UDS_readyReqCheck()>0U)
-   {
-        UDS_REQ_t* request = UDS_peekNextRequest();
+     UDS_REQ_t* request = UDS_peekNextRequest();
+    if(UDS_readyReqCheck()>0U)
+    {
         uint8_t responseData[UDS_MAX_RESPONSE_DATA_LENGTH] = {0U};
         UDS_RES_t response =
         {
@@ -278,7 +278,7 @@ void UDS_mainFunction(void)
                     handleNRC(request,&response,UDS_NRC_0x78_REQUEST_CORRECTLY_RECEIVED_RESPONSE_PENDING,request->data[REQUEST_SID_INDEX]);
                     if(1U == UDS_sendResponse(&response))
                     {
-                        /*TODO:Yield Task for some time (some % of the p2 time of the current session)*/
+                        return 1U;/*The task should be yielded*/
                     }
                     else
                     {
@@ -343,12 +343,13 @@ void UDS_mainFunction(void)
                 	break;
                     /*ERROR*/
             }        
-       }
+        }
        else
-       {
+        {
             /*ERROR*/
-       }
-   }
+        }
+    }
+   return 0U;
 }
 
 /*Callbacks*/

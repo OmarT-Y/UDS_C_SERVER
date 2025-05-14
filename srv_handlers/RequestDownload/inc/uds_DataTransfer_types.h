@@ -9,7 +9,7 @@
 
 #include "uds_types.h"
 #include "uds_NR_Handler.h"
-#include "uds_utils.h"
+#include "UDS_utils.h"
 #include "uds_DataTransfer_cfg.h"
 
 #define SID_34_POS_RES_CODE             0x74

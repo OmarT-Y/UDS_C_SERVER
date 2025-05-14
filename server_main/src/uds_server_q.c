@@ -55,7 +55,7 @@ static uint8_t* allocateBuffer(uint16_t size) {
             if (0U == bufferPool.smallFree[i]) 
             {
                 bufferPool.smallFree[i] = 1U;
-                return bufferPool.smallBuffers[i];
+                return &(bufferPool.smallBuffers[i]);
             }
         }
     }
@@ -68,7 +68,7 @@ static uint8_t* allocateBuffer(uint16_t size) {
             if (0U == bufferPool.mediumFree[i]) 
             {
                 bufferPool.mediumFree[i] = 1U;
-                return bufferPool.mediumBuffers[i];
+                return &(bufferPool.mediumBuffers[i]);
             }
         }
     }
@@ -81,7 +81,7 @@ static uint8_t* allocateBuffer(uint16_t size) {
             if (0U == bufferPool.largeFree[i]) 
             {
                 bufferPool.largeFree[i] = 1U;
-                return bufferPool.largeBuffers[i];
+                return &(bufferPool.largeBuffers[i]);
             }
         }
     }
@@ -97,7 +97,7 @@ static void freeBuffer(void* ptr) {
 	uint8_t i;
     for (i = 0; i < UDS_SERVER_QUEUE_NUM_OF_SMALL_BLOCKS; i++)
     {
-        if (bufferPool.smallBuffers[i] == ptr) 
+        if (&(bufferPool.smallBuffers[i]) == ptr) 
         {
             bufferPool.smallFree[i] = 0U;
             return;
@@ -106,7 +106,7 @@ static void freeBuffer(void* ptr) {
 
     for (i = 0; i < UDS_SERVER_QUEUE_NUM_OF_MEDIUM_BLOCKS; i++)
     {
-        if (bufferPool.mediumBuffers[i] == ptr) 
+        if (&(bufferPool.mediumBuffers[i]) == ptr) 
         {
             bufferPool.mediumFree[i] = 0U;
             return;
@@ -115,7 +115,7 @@ static void freeBuffer(void* ptr) {
 
     for (i = 0; i < UDS_SERVER_QUEUE_NUM_OF_LARGE_BLOCKS; i++)
     {
-        if (bufferPool.largeBuffers[i] == ptr) 
+        if (&(bufferPool.largeBuffers[i]) == ptr) 
         {
             bufferPool.largeFree[i] = 0U;
             return;
@@ -144,6 +144,11 @@ static uint8_t UDS_req_q_new_entry(UDS_REQ_t* newReq,uint8_t index)
         {
             ((uint8_t*)&UDS_requests_Q[index])[i] = ((uint8_t*)newReq)[i];
         }
+        UDS_requests_Q[index].data  = dataPtr;
+        for(i =0;i<newReq->udsDataLen;i++)
+        {
+            dataPtr[i]=newReq->data[i];
+        }
         return 1U;
     }
     return 0U;
@@ -156,7 +161,7 @@ static uint8_t UDS_req_q_new_entry(UDS_REQ_t* newReq,uint8_t index)
 uint8_t UDS_Request_enqueue(UDS_REQ_t* newReq)
 {   
     /*when nextIn = nextOut the queue is either full or empty*/
-    if(request_q_nextIn == request_q_nextOut && requestsReady== UDS_SERVER_QUEUE_MAX_NUMBER_OF_REQS)
+    if(request_q_nextIn == request_q_nextOut && requestsReady == UDS_SERVER_QUEUE_MAX_NUMBER_OF_REQS)
     {
         /*The queue is full*/
         /*This shouldn't be reachable (check available before enqueueing)*/
