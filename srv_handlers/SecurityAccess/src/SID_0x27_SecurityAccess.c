@@ -154,6 +154,11 @@ UDS_RESPONSE_SUPPRESSION_t SID_27_Handler(UDS_REQ_t * request, UDS_RES_t * respo
     return UDS_NO_SUPPRESS_RESPONSE;
 }
 
+void UDS_securityAccess_attemptCount_timeout(uint16_t time)
+{
+    /*this should set the function "uds_secLvl_attempt_callBack" as a call back after "time" ms*/
+    return;
+}
 
 const UDS_SubFunctionSupportivity_t* SID_27_getSubFunctSuppStruct(uint8_t subFunction)
 {

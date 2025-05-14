@@ -134,6 +134,7 @@ typedef struct
  * @param SessionID Session ID
  * @param p2_server_max
  * @param p2_server_star_max
+ * @param s3_server_session_timeout
  * @param supportedService Flags/mask for Services which are supported in this session
  * @param SupportivityStruct Structure to hold information about the funciton being supported in which session and which security levels
  */
@@ -141,7 +142,8 @@ typedef struct
 {
     uint8_t                             SessionID;
     uint16_t                            p2_server_max;
-    uint16_t                            p2_server_star_max; 
+    uint16_t                            p2_server_star_max;
+    uint16_t                            s3_server_session_timeout;
     uint32_t                            supportedService[6];
     UDS_SubFunctionSupportivity_t*      SupportivityStruct;
 }UDS_Session_t;
@@ -185,13 +187,11 @@ typedef uint8_t (*securityKeyCheckFuncPtr)(const uint8_t* key);
 /** 
  * @brief UDS Server context
  * @param activeSession current active session
- * @param sessionTimeout Time in ms after which the server should go back to the default session if not already there
  * @param activeSecLvl current security level
  */
 typedef struct 
 {
     UDS_Session_t*          activeSession;
-    uint16_t                sessionTimeout;
 #ifdef UDS_SECURITY_LEVEL_SUPPORTED
     UDS_SecurityLevel_t*    activeSecLvl;
 #endif

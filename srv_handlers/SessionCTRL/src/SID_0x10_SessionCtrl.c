@@ -10,15 +10,21 @@ extern uint8_t UDS_sendResponse(UDS_RES_t *response);
 
 /*Flag inficating if the boot loader is currently active*/
 #ifdef UDS_PROGRAMMING_SESSION_ENABLED
+
 #include "UDS_utils.h"
+
 #define START_SEC_UDS_SEC_DATA
 #include "uds_memMap.h"
 
-/*The flag*/
+/*The bootloader flag*/
+#ifdef UDS_APP_INSTANCE_ENABLE
 uint8_t bootLoaderActiveFlag = 0U;
+#endif
+
 #define STOP_SEC_UDS_SEC_DATA
 #include "uds_memMap.h"
 
+#ifdef UDS_APP_INSTANCE_ENABLE
 #define START_SEC_UDS_SEC_CODE
 #include "uds_memMap.h"
 
@@ -33,8 +39,10 @@ void clear_BootLoader_ActiveFlag()
 {
     bootLoaderActiveFlag = 0U;
 }
+
 #define STOP_SEC_UDS_SEC_CODE
 #include "uds_memMap.h"
+#endif
 
 #endif
 
@@ -42,6 +50,7 @@ void clear_BootLoader_ActiveFlag()
 #define START_SEC_UDS_SEC_CODE
 #include "uds_memMap.h"
 
+#ifdef UDS_APP_INSTANCE_ENABLE
 static uint8_t UDS_FBL_notifyProgrammingSession(UDS_Server_t * server)
 {
     /*implementation specific*/
@@ -80,13 +89,14 @@ static uint8_t UDS_FBL_notifyProgrammingSession(UDS_Server_t * server)
         }
     return 1U;
 }
+#endif
 
 UDS_RESPONSE_SUPPRESSION_t SID_10_PositiveResponseHandler(UDS_Session_t* newSessionPtr,UDS_RES_t * response,UDS_REQ_t * request, UDS_Server_t * server)
 {
     /*start timeout*/
-	if(UDS_DEFAULT_SESSION_ID != newSessionPtr->SessionID && server->activeSession->SessionID != newSessionPtr->SessionID)
+	if(UDS_DEFAULT_SESSION_ID != newSessionPtr->SessionID && server->activeSession->SessionID != newSessionPtr->SessionID && request->status == UDS_REQUEST_STATUS_NOT_SERVED)
 	{
-        START_TIMEOUT_FUNC(server->sessionTimeout);
+        START_SESSION_TIMEOUT_FUNC(newSessionPtr->s3_server_session_timeout);
 	}
     server->activeSession = newSessionPtr;
 	if(CHECK_REQUEST_SUPPRESS_BIT(request) && request->status != UDS_REQUEST_STATUS_SERVED_NOT_RESPONDED_TO)
@@ -119,6 +129,7 @@ UDS_RESPONSE_SUPPRESSION_t SID_10_Handler(UDS_REQ_t * request, UDS_RES_t * respo
         return SID_10_PositiveResponseHandler(newSessionPtr,response,request,server);
     }
 #ifdef UDS_PROGRAMMING_SESSION_ENABLED
+#ifdef UDS_APP_INSTANCE_ENABLE
     if(newSession == UDS_PROGRAMMING_SESSION_ID && bootLoaderActiveFlag == 0)
     {
         if(0U == UDS_FBL_notifyProgrammingSession(server))
@@ -132,6 +143,7 @@ UDS_RESPONSE_SUPPRESSION_t SID_10_Handler(UDS_REQ_t * request, UDS_RES_t * respo
         return UDS_NO_SUPPRESS_RESPONSE;
     }
     else
+#endif
 #endif
     {
         return SID_10_PositiveResponseHandler(newSessionPtr,response,request,server);

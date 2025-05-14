@@ -66,17 +66,6 @@ UDS_SecurityLevel_t  securityLevels [UDS_NUMBER_OF_SECURITY_LEVELS] =
     }
 };
 
-void UDS_securityAccess_attemptCount_timeout(uint16_t time)
-{
-    /*this should set the function "uds_secLvl_attempt_callBack" as a call back after "time" ms*/
-    return;
-}
-void UDS_securityAccess_defaultLvl_timeout(uint16_t time)
-{
-    /*This should set the function "UDS_defaultSecurityLevelResetCallBack" as call back after "time" ms*/
-    return;
-}
-
 #if defined(__STDC_VERSION__) && (__STDC_VERSION__ >= 201112L)
     /* C11 or later: Safe to use static_assert */
     #include <assert.h>

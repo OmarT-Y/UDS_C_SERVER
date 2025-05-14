@@ -60,4 +60,13 @@ uint8_t UDS_sendResponse(UDS_RES_t *response);
  */
 uint8_t UDS_mainFunction(void);
 
+/* 
+ * Maps starting the timeout function to SID 0x10 Timeout function to a custom function handling
+ * the timeout of SID 0x10 that encapsulates any needed OS calls
+ */
+#define START_TIMEOUT_FUNC UDS_startSessionTimeout
+void UDS_startSessionTimeout(uint16_t t);
+
+void UDS_securityAccess_defaultLvl_timeout(uint16_t time);
+
 #endif

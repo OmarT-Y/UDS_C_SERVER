@@ -100,6 +100,11 @@ static UDS_SubFunctionCheckResult_t UDS_SubFunctionChecks(const UDS_SubFunctionS
 }
 static UDS_RESPONSE_SUPPRESSION_t  UDS_handleRequest(UDS_REQ_t* request, UDS_RES_t * response)
 {
+    /*restart timeout*/
+    if(UDS_DEFAULT_SESSION_ID != udsServer.activeSession->SessionID)
+    {
+        UDS_startSessionTimeout(udsServer.activeSession->s3_server_session_timeout);
+    }
     /*TODO : Handle suppressed responses
     TODO : How to handle remote requests
     TODO : How to handle addresses
@@ -355,19 +360,20 @@ uint8_t UDS_mainFunction(void)
 /*Callbacks*/
 void UDS_defaultSessionResetCallBack()
 {
-    if(udsServer.activeSession->SessionID != UDS_DEFAULT_SESSION_ID)
-    {
-        udsServer.activeSession = UDS_DEFAULT_SESSION_PTR;
-    }
+    udsServer.activeSession = UDS_DEFAULT_SESSION_PTR;
+    udsServer.activeSecLvl  = SECURITY_LVL_DEFAULT_STRUCT_PTR;
+}
+
+void UDS_startSessionTimeout(uint16_t t)
+{
+    /*this should set the function "UDS_defaultSessionResetCallBack" as callback after t ms*/
+    return;
 }
 
 #ifdef UDS_SECURITY_LEVEL_SUPPORTED
 void UDS_defaultSecurityLevelResetCallBack()
 {
-    if(udsServer.activeSecLvl->SecurityLvlID != SECURITY_LVL_DEFAULT_ID)
-    {
-        udsServer.activeSecLvl = SECURITY_LVL_DEFAULT_STRUCT_PTR;
-    }
+    udsServer.activeSecLvl = SECURITY_LVL_DEFAULT_STRUCT_PTR;
 }
 
 void UDS_setSecurityLvlAfterProgSessionReset(UDS_SecurityLevel_t* lvlRecord)
@@ -382,8 +388,15 @@ void UDS_setSecurityLvlAfterProgSessionReset(UDS_SecurityLevel_t* lvlRecord)
         }
     }
 }
+
+void UDS_securityAccess_defaultLvl_timeout(uint16_t time)
+{
+    /*This should set the function "UDS_defaultSecurityLevelResetCallBack" as call back after "time" ms*/
+    return;
+}
 #endif
 
+#ifdef UDS_FBL_INSTANCE_ENABLE
 /**
  * @brief Callback function called by the bootloader after completing a queued Utilities request
  */
@@ -400,5 +413,6 @@ void UDS_BL_UtilsReq_callBack(uint8_t status)
         request->status = UDS_REQUEST_GENERAL_ERROR;
     }
 }
+#endif
 #define STOP_SEC_UDS_SEC_CODE
 #include "uds_memMap.h"

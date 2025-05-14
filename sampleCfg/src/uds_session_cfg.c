@@ -45,18 +45,20 @@ static const UDS_SubFunctionSupportivity_t session_0x2_supportivity =
 UDS_Session_t serverSessions [UDS_NUMBER_OF_SESSIONS] =
 {
     {
-        .SessionID          = UDS_DEFAULT_SESSION_ID,
-        .p2_server_max      = UDS_DEFAULT_SESSION_P2_SERVER_MAX,
-        .p2_server_star_max = UDS_DEFAULT_SESSION_P2_SERVER_START_MAX,
-        .supportedService   = UDS_DEFAULT_SESSION_SUPPORTED_SID_MASK,
-		.SupportivityStruct = &session_0x1_supportivity
+        .SessionID                  = UDS_DEFAULT_SESSION_ID,
+        .p2_server_max              = UDS_DEFAULT_SESSION_P2_SERVER_MAX,
+        .p2_server_star_max         = UDS_DEFAULT_SESSION_P2_SERVER_START_MAX,
+        .s3_server_session_timeout  = UDS_DEFAULT_SESSION_S3_SESSION_TIMEOUT,
+        .supportedService           = UDS_DEFAULT_SESSION_SUPPORTED_SID_MASK,
+		.SupportivityStruct         = &session_0x1_supportivity
     },
     {
-        .SessionID          = UDS_PROGRAMMING_SESSION_ID,
-        .p2_server_max      = UDS_PROGRAMMING_SESSION_P2_SERVER_MAX,
-        .p2_server_star_max = UDS_PROGRAMMING_SESSION_P2_SERVER_START_MAX,
-        .supportedService   = UDS_PROGRAMMING_SESSION_SUPPORTED_SID_MASK,
-		.SupportivityStruct = &session_0x2_supportivity
+        .SessionID                  = UDS_PROGRAMMING_SESSION_ID,
+        .p2_server_max              = UDS_PROGRAMMING_SESSION_P2_SERVER_MAX,
+        .p2_server_star_max         = UDS_PROGRAMMING_SESSION_P2_SERVER_START_MAX,
+        .s3_server_session_timeout  = UDS_PROGRAMMING_SESSION_S3_SESSION_TIMEOUT,
+        .supportedService           = UDS_PROGRAMMING_SESSION_SUPPORTED_SID_MASK,
+		.SupportivityStruct         = &session_0x2_supportivity
     }
     /* ,
      {
@@ -73,12 +75,6 @@ UDS_Session_t serverSessions [UDS_NUMBER_OF_SESSIONS] =
      }
     */
 };
-
-void SID_10_startTimeout(uint16_t t)
-{
-    /*this should set the function "UDS_defaultSessionResetCallBack" as callback after t ms*/
-    return;
-}
 
 #if defined(__STDC_VERSION__) && (__STDC_VERSION__ >= 201112L)
     /* C11 or later: Safe to use static_assert */
