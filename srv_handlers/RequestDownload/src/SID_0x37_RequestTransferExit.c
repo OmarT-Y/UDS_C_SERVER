@@ -9,10 +9,13 @@ extern void UDS_BL_UtilsReq_callBack(uint8_t status);
 #define START_SEC_UDS_SEC_CODE
 #include "uds_memMap.h"
 /*TODO : add transfer response parameter record?*/
-static uint8_t requestFlashBankVerification()
+uint8_t endFlashFBL_notification()
 {
-    BL_UDS_UtilsReq_MetaData_t BL_UtilsReq = {UDS_BL_UtilsReq_callBack,BL_UTILS_REQ_VALIDATE_FLASH_BANK,NULL,0U,1U};
-    return BLUtils_createNewRequest(&BL_UtilsReq);
+    if(FLASH_OK == modify_flag(FLASHING_IN_PROGRESS,FLAG_CLEAR))
+    {
+        return 1U;
+    }
+    return 0U;
 }
 
 UDS_RESPONSE_SUPPRESSION_t SID_37_PositiveResponseHandler(UDS_REQ_t *request,UDS_RES_t * response,UDS_Server_t * server)
@@ -39,6 +42,11 @@ UDS_RESPONSE_SUPPRESSION_t SID_37_Handler(UDS_REQ_t *request,UDS_RES_t * respons
     {
         handleNRC(request, response, UDS_NRC_0x13_INCORRCT_MESSAGE_LENGTH_OR_INVALID_FORMAT, request->data[REQUEST_SID_INDEX]);
         return  UDS_NO_SUPPRESS_RESPONSE;
+    }
+    if(0U == endFlashFBL_notification())
+    {
+        handleNRC(request,response,UDS_NRC_0x72_GENERAL_PROGRAMMING_FAILURE,request->data[REQUEST_SID_INDEX]);
+        return UDS_NO_SUPPRESS_RESPONSE;
     }
     dataTransferStatus.payloadSize = 0U;
     dataTransferStatus.address=0U;

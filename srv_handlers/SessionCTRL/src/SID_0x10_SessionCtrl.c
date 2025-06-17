@@ -55,38 +55,32 @@ static uint8_t UDS_FBL_notifyProgrammingSession(UDS_Server_t * server)
 {
     /*implementation specific*/
     /*try to set the flag 5 times*/
-    UDS_Utils_FLAG flagsToBeSet[] = {PROGRAMMING_SESSION,FLASHING_IN_PROGRESS};
-    uint8_t numberFlagsTobeSet = 2U;
-    uint8_t i=0,currentFlagIndex=0;
-    for(;currentFlagIndex<numberFlagsTobeSet;currentFlagIndex++)
+    uint8_t i=0;
+    for( ; i<UDS_FBL_MAX_NORIFTY_TRY_COUNT ; i++ )
     {
-        i = 0;
-        for( ; i<UDS_FBL_MAX_NORIFTY_TRY_COUNT ; i++ )
+        if(FLASH_OK == modify_flag(PROGRAMMING_SESSION,FLAG_SET))
         {
-            if(FLASH_OK == modify_flag(flagsToBeSet[currentFlagIndex],FLAG_SET))
-            {
-                break;
-            }
-        }
-        if(UDS_FBL_MAX_NORIFTY_TRY_COUNT <= i)
-        {
-            /*fail*/
-            return 0U;
+            break;
         }
     }
+    if(UDS_FBL_MAX_NORIFTY_TRY_COUNT <= i)
+    {
+        /*fail*/
+        return 0U;
+    }
     i = 0;
-        for( ; i<UDS_FBL_MAX_NORIFTY_TRY_COUNT ; i++ )
+    for( ; i<UDS_FBL_MAX_NORIFTY_TRY_COUNT ; i++ )
+    {
+        if(FLASH_OK == modify_flag(UDS_LAST_SECURITY_LEVEL,server->activeSecLvl->SecurityLvlID))
         {
-            if(FLASH_OK == modify_flag(UDS_LAST_SECURITY_LEVEL,server->activeSecLvl->SecurityLvlID))
-            {
-                break;
-            }
+            break;
         }
-        if(UDS_FBL_MAX_NORIFTY_TRY_COUNT <= i)
-        {
-            /*fail*/
-            return 0U;
-        }
+    }
+    if(UDS_FBL_MAX_NORIFTY_TRY_COUNT <= i)
+    {
+        /*fail*/
+        return 0U;
+    }
     return 1U;
 }
 #endif

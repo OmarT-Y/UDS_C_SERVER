@@ -5,6 +5,7 @@
  *  Modification Logs   : 24-2-2025 File Creation
  ****************************************************************************************************/
 #include "uds_DataTransfer_types.h"
+#include "UDS_utils.h"
 
 #define START_SEC_UDS_SEC_DATA
 #include "uds_memMap.h"
@@ -26,9 +27,20 @@ UDS_dataTransferStatusRecord_t dataTransferStatus =
 #define STOP_SEC_UDS_SEC_DATA
 #include "uds_memMap.h"
 
-
 #define START_SEC_UDS_SEC_CODE
 #include "uds_memMap.h"
+
+uint8_t startFlashFBL_notification()
+{
+    if(FLASH_OK == modify_flag(FLASHING_IN_PROGRESS,FLAG_SET))
+    {
+        return 1U;
+    }
+    return 0U;
+}
+
+
+
 UDS_RESPONSE_SUPPRESSION_t SID_34_Handler(UDS_REQ_t *request,UDS_RES_t * response,UDS_Server_t * server)
 {
     /*a request is already in progress*/
@@ -86,6 +98,12 @@ UDS_RESPONSE_SUPPRESSION_t SID_34_Handler(UDS_REQ_t *request,UDS_RES_t * respons
         return UDS_NO_SUPPRESS_RESPONSE;
     }
 
+    /*Raise flashing in progress flag (notify bootloader)*/
+    if(0U == startFlashFBL_notification())
+    {
+        handleNRC(request,response,UDS_NRC_0x72_GENERAL_PROGRAMMING_FAILURE,request->data[REQUEST_SID_INDEX]);
+        return UDS_NO_SUPPRESS_RESPONSE;
+    }
     /*Set the address*/
     uint64_t req_address = 0U;
     uint8_t i;
