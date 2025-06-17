@@ -52,18 +52,8 @@ UDS_RESPONSE_SUPPRESSION_t SID_37_Handler(UDS_REQ_t *request,UDS_RES_t * respons
 #endif
     dataTransferStatus.currentLoopCounter = 0U;
     dataTransferStatus.requestComplete = 0U;
-    /*TODO : Notify bootloader to to verify or make it a routine and just send a positive response*/
-    if(requestFlashBankVerification())
-    {
-        handleNRC(request, response, UDS_NRC_0x78_REQUEST_CORRECTLY_RECEIVED_RESPONSE_PENDING, request->data[REQUEST_SID_INDEX]);
-        return  UDS_NO_SUPPRESS_RESPONSE;
-    }
-    else
-    {
-        /*TODO: should this be busy or general reject*/
-        handleNRC(request, response, UDS_NRC_0x21_BUSY_REPEAT_REQUEST, request->data[REQUEST_SID_INDEX]);
-        return  UDS_NO_SUPPRESS_RESPONSE;
-    }
+    response->data[RESPONSE_SID_INDEX] = SID_37_POS_RES_CODE;
+    response->udsDataLen = 1U; /*No data in the response*/
     return UDS_NO_SUPPRESS_RESPONSE;
 }
 #define STOP_SEC_UDS_SEC_CODE

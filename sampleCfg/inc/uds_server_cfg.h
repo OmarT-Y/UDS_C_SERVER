@@ -18,7 +18,6 @@
 
 #define UDS_MAX_RESPONSE_DATA_LENGTH            32U
 
-#define UDS_APP_INSTANCE_ENABLE
 #define UDS_FBL_INSTANCE_ENABLE
 
 #endif

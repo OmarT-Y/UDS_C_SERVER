@@ -180,9 +180,9 @@ UDS_RESPONSE_SUPPRESSION_t SID_31_Handler(UDS_REQ_t *request, UDS_RES_t *respons
         switch(newStatus)
         {
             case ROUTINE_STATUS_STOPPED:
-            handleNRC(request, response, UDS_NRC_0x24_REQUEST_SEQUENCE_ERROR, request->data[REQUEST_SID_INDEX]);
-            return UDS_NO_SUPPRESS_RESPONSE;
-            break;
+                handleNRC(request, response, UDS_NRC_0x24_REQUEST_SEQUENCE_ERROR, request->data[REQUEST_SID_INDEX]);
+                return UDS_NO_SUPPRESS_RESPONSE;
+                break;
             case ROUTINE_STATUS_RUNNING:
             case ROUTINE_STATUS_COMPLETED_SUCCESS:
             case ROUTINE_STATUS_TIMEOUT:

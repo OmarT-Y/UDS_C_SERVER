@@ -6,7 +6,7 @@
  ****************************************************************************************************/
 #include "uds_server.h"
 
-extern uint8_t bootLoaderActiveFlag;
+
 void UDS_securityAccess_defaultLvl_timeout(uint16_t time);
 
 #define START_SEC_UDS_SEC_DATA
@@ -101,9 +101,16 @@ static UDS_SubFunctionCheckResult_t UDS_SubFunctionChecks(const UDS_SubFunctionS
 static UDS_RESPONSE_SUPPRESSION_t  UDS_handleRequest(UDS_REQ_t* request, UDS_RES_t * response)
 {
     /*restart timeout*/
-    if(UDS_DEFAULT_SESSION_ID != udsServer.activeSession->SessionID)
+    if(UDS_DEFAULT_SESSION_ID != udsServer.activeSession->SessionID
+        #ifdef UDS_SECURITY_LEVEL_SUPPORTED
+        || SECURITY_LVL_DEFAULT_ID != udsServer.activeSecLvl->SecurityLvlID
+        #endif
+    )
     {
-        UDS_startSessionTimeout(udsServer.activeSession->s3_server_session_timeout);
+        if(request->trgAddType != UDS_A_TA_FUNCTIONAL)
+        {
+            UDS_SecLvl_Session_TimeoutReset();
+        }   
     }
     /*TODO : Handle suppressed responses
     TODO : How to handle remote requests
@@ -361,42 +368,47 @@ uint8_t UDS_mainFunction(void)
 void UDS_defaultSessionResetCallBack()
 {
     udsServer.activeSession = UDS_DEFAULT_SESSION_PTR;
+#ifdef UDS_SECURITY_LEVEL_SUPPORTED
     udsServer.activeSecLvl  = SECURITY_LVL_DEFAULT_STRUCT_PTR;
+#endif
 }
 
 void UDS_startSessionTimeout(uint16_t t)
 {
     /*this should set the function "UDS_defaultSessionResetCallBack" as callback after t ms*/
+    /*this 10 is for a config bug */
+    CancelAlarm(udsSessionTimeoutAlarm);
+    SetRelAlarm(udsSessionTimeoutAlarm, t / (OS_TICKS2MS_SYSTEMTIMER(1) * 10), 0);
     return;
 }
 
 #ifdef UDS_SECURITY_LEVEL_SUPPORTED
-void UDS_defaultSecurityLevelResetCallBack()
+void UDS_defaultSecurityLevelResetCallack()
 {
     udsServer.activeSecLvl = SECURITY_LVL_DEFAULT_STRUCT_PTR;
-}
-
-void UDS_setSecurityLvlAfterProgSessionReset(UDS_SecurityLevel_t* lvlRecord)
-{
-    if(bootLoaderActiveFlag)
-    {
-        udsServer.activeSecLvl = lvlRecord;
-        /*re-start timeout*/
-        if(SECURITY_LVL_DEFAULT_ID != udsServer.activeSecLvl->SecurityLvlID)
-        {
-            UDS_securityAccess_defaultLvl_timeout(udsServer.activeSecLvl->LevelTimeout);
-        }
-    }
 }
 
 void UDS_securityAccess_defaultLvl_timeout(uint16_t time)
 {
     /*This should set the function "UDS_defaultSecurityLevelResetCallBack" as call back after "time" ms*/
+    /*this 10 is for a config bug */
+    CancelAlarm(udsDefaultSecurityLevelResetTimeoutAlarm);
+    SetRelAlarm(udsDefaultSecurityLevelResetTimeoutAlarm, time / (OS_TICKS2MS_SYSTEMTIMER(1) * 10), 0); 
     return;
 }
 #endif
 
+void UDS_SecLvl_Session_TimeoutReset()
+{
+    UDS_startSessionTimeout(udsServer.activeSession->s3_server_session_timeout);
+#ifdef UDS_SECURITY_LEVEL_SUPPORTED
+    UDS_securityAccess_defaultLvl_timeout(udsServer.activeSecLvl->LevelTimeout);
+#endif
+}
 #ifdef UDS_FBL_INSTANCE_ENABLE
+
+extern uint8_t bootLoaderActiveFlag;
+
 /**
  * @brief Callback function called by the bootloader after completing a queued Utilities request
  */
@@ -413,6 +425,17 @@ void UDS_BL_UtilsReq_callBack(uint8_t status)
         request->status = UDS_REQUEST_GENERAL_ERROR;
     }
 }
+#ifdef UDS_SECURITY_LEVEL_SUPPORTED
+void UDS_setSecurityLvlAfterProgSessionReset(UDS_SecurityLevel_t* lvlRecord)
+{
+    udsServer.activeSecLvl = lvlRecord;
+    /*re-start timeout*/
+    if(SECURITY_LVL_DEFAULT_ID != udsServer.activeSecLvl->SecurityLvlID)
+    {
+        UDS_securityAccess_defaultLvl_timeout(udsServer.activeSecLvl->LevelTimeout);
+    }
+}
+#endif
 #endif
 #define STOP_SEC_UDS_SEC_CODE
 #include "uds_memMap.h"

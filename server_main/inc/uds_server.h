@@ -19,6 +19,7 @@
 #include "uds_NR_Handler.h"
 #include "uds_helpers.h"
 #include "uds_server_q.h"
+#include "Os.h"
 
 
 /**

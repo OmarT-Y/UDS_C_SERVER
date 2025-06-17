@@ -19,9 +19,9 @@ uint8_t invalidTimerFlag = 0;
 #define STOP_SEC_UDS_SEC_DATA
 #include "uds_memMap.h"
 
-
 #define START_SEC_UDS_SEC_CODE
 #include "uds_memMap.h"
+#include "Os.h"
 void uds_secLvl_attempt_callBack(void)
 {
     invalidTimerFlag = 0U;
@@ -157,6 +157,7 @@ UDS_RESPONSE_SUPPRESSION_t SID_27_Handler(UDS_REQ_t * request, UDS_RES_t * respo
 void UDS_securityAccess_attemptCount_timeout(uint16_t time)
 {
     /*this should set the function "uds_secLvl_attempt_callBack" as a call back after "time" ms*/
+    SetRelAlarm(udsSecurityAccessAttemptCountTimeoutAlarm, time / (OS_TICKS2MS_SYSTEMTIMER(1) * 10), 0);
     return;
 }
 

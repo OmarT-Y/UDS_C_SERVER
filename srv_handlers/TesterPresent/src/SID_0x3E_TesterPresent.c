@@ -9,14 +9,11 @@
 #include "uds_sid_cfg.h"
 
 #include "SID_0x3E_cfg.h"
-static void resetTimer(void)
-{
-    return;
-}
+extern void UDS_SecLvl_Session_TimeoutReset();
 UDS_RESPONSE_SUPPRESSION_t SID_3E_Handler(UDS_REQ_t * request, UDS_RES_t * response, UDS_Server_t * server)
 {
     /*reset timer*/
-    RESET_TIMER_FUNC();
+    UDS_SecLvl_Session_TimeoutReset();
 
     if(CHECK_REQUEST_SUPPRESS_BIT(request))
     {

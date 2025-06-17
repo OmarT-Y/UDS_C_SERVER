@@ -17,14 +17,14 @@ extern uint8_t UDS_sendResponse(UDS_RES_t *response);
 #include "uds_memMap.h"
 
 /*The bootloader flag*/
-#ifdef UDS_APP_INSTANCE_ENABLE
+#ifdef UDS_FBL_INSTANCE_ENABLE
 uint8_t bootLoaderActiveFlag = 0U;
 #endif
 
 #define STOP_SEC_UDS_SEC_DATA
 #include "uds_memMap.h"
 
-#ifdef UDS_APP_INSTANCE_ENABLE
+#ifdef UDS_FBL_INSTANCE_ENABLE
 #define START_SEC_UDS_SEC_CODE
 #include "uds_memMap.h"
 
@@ -96,7 +96,7 @@ UDS_RESPONSE_SUPPRESSION_t SID_10_PositiveResponseHandler(UDS_Session_t* newSess
     /*start timeout*/
 	if(UDS_DEFAULT_SESSION_ID != newSessionPtr->SessionID && server->activeSession->SessionID != newSessionPtr->SessionID && request->status == UDS_REQUEST_STATUS_NOT_SERVED)
 	{
-        START_SESSION_TIMEOUT_FUNC(newSessionPtr->s3_server_session_timeout);
+        UDS_startSessionTimeout(newSessionPtr->s3_server_session_timeout);
 	}
     server->activeSession = newSessionPtr;
 	if(CHECK_REQUEST_SUPPRESS_BIT(request) && request->status != UDS_REQUEST_STATUS_SERVED_NOT_RESPONDED_TO)
@@ -130,7 +130,7 @@ UDS_RESPONSE_SUPPRESSION_t SID_10_Handler(UDS_REQ_t * request, UDS_RES_t * respo
     }
 #ifdef UDS_PROGRAMMING_SESSION_ENABLED
 #ifdef UDS_APP_INSTANCE_ENABLE
-    if(newSession == UDS_PROGRAMMING_SESSION_ID && bootLoaderActiveFlag == 0)
+    if(newSession == UDS_PROGRAMMING_SESSION_ID)
     {
         if(0U == UDS_FBL_notifyProgrammingSession(server))
         {
