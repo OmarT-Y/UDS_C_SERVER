@@ -24,9 +24,9 @@ void flsWaitUntilJobDone(void)
 UDS_Utils_ReturnType modify_flag(UDS_Utils_FLAG flag ,UDS_Utils_ModifyFlag input){
 	Std_ReturnType fls_ret;
 
-	//leah quad page
-	fls_ret = Fls_Read((Fls_AddressType)FLAGS, (uint8_t *)&flags_instance, (Fls_LengthType)QUAD_PAGE_SIZE);
-	flsWaitUntilJobDone();
+	// //leah quad page
+	// fls_ret = Fls_Read((Fls_AddressType)FLAGS, (uint8_t *)&flags_instance, (Fls_LengthType)QUAD_PAGE_SIZE);
+	// flsWaitUntilJobDone();
 
 	switch(flag){
 	case PROGRAMMING_SESSION:
@@ -477,7 +477,7 @@ UDS_Utils_ReturnType parse_data(uint8_t* data, uint32_t data_length){
 		uint32_t start_address;
 		uint32_t segment_length;
 		uint16_t crc;
-		uint16_t app_length;
+		uint32_t app_length;
 	/*parse data bytes to respective variables*/
 	if(data[0] != METADATA_SEGMENT_BYTE_CODE){
 	
@@ -563,14 +563,15 @@ void BLUtil_mainFunction(void)
 				{
 					ret = 1;
 				}
+				break;
 			case BL_UTILS_REQ_VALIDATE_FLASH_BANK:
-				if(FLASH_OK == validate_flashbank((FlashBankType)(*(BL_UtilisRequestStatus.requestData))))
+				if(FLASH_BANK_VALID == validate_flashbank( * (FlashBankType *)(BL_UtilisRequestStatus.requestData)))
 				{
 					ret = 1;
 				}
 				break;
 			case BL_UTILS_REQ_SWITCH_FLASH_BANK:
-				if(FLASH_OK == switch_flashbank((FlashBankType)(*(BL_UtilisRequestStatus.requestData))))
+				if(FLASH_OK == switch_flashbank( * (FlashBankType *)(BL_UtilisRequestStatus.requestData)))
 				{
 					ret = 1;
 				}
@@ -590,6 +591,11 @@ void BLUtil_mainFunction(void)
 					BL_UtilisRequestStatus.callBack(1U);
 					BL_UtilisRequestStatus.callBack = NULL;
 				}
+			}
+			else
+			{
+				/*Decrement the number of allowed trials*/
+				BL_UtilisRequestStatus.requestTrialCount--;
 			}
 		}
 	}
