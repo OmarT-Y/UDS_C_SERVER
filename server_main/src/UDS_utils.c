@@ -534,6 +534,8 @@ else{
 		{
 			/*TODO: check valid size*/
 			modify_flag(BOOTLOADER_UPDATE_REQUEST,FLAG_SET);
+			app_length = (data[3] << 24) | (data[4] << 16) | (data[5] << 8) | data[6];
+			modify_flag(BOOTLOADER_UPDATE_SIZE,app_length);
 		}
 	}
 	return FLASH_OK;
