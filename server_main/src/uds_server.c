@@ -177,6 +177,15 @@ static UDS_RESPONSE_SUPPRESSION_t  UDS_handleRequest(UDS_REQ_t* request, UDS_RES
     }
 #endif
 
+    /*pre conditions checks*/
+    if(NULL != sid_record->preConditionsChecksFuncPtr)
+    {
+        if(1 != sid_record->preConditionsChecksFuncPtr(&request->data[1],request->udsDataLen-1U))
+        {
+            handleNRC(request,response,UDS_NRC_0x22_CONDITIONS_NOT_CORRECT,request->data[REQUEST_SID_INDEX]);
+            return UDS_NO_SUPPRESS_RESPONSE;
+        }
+    }
     /*check if 0x31*/
 #ifdef SID_31_ROUTINE_CTRL_ENABLED
     if(sid_record->sid == SID_31_ROUTINE_CTRL)

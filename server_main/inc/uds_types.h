@@ -271,7 +271,8 @@ typedef struct
     UDS_ServiceHandlerPtr_t                         handler;
     /*TODO: change to bool*/
     uint8_t                                         hasSubFunc;
-    UDS_SubFunctionSuppStructFuncPtr_t              subfuncSupportivityStructGet;                                 
+    UDS_SubFunctionSuppStructFuncPtr_t              subfuncSupportivityStructGet;
+    uint8_t                                         (*preConditionsChecksFuncPtr)(uint8_t* data, uint8_t length);                           
 }UDS_SID_RECORD_t;
 
 

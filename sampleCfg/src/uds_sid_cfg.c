@@ -22,6 +22,7 @@ UDS_SID_RECORD_t UDS_a_supportedSID_Record[] =
 				.minLen                                 = SID_10_DIAG_SESSION_CTRL_MIN_LEN,
 				.handler                                = SID_10_Handler,
 				.hasSubFunc                             = SID_10_DIAG_SESSION_CTRL_HAS_SUB_FUNC,
+				.preConditionsChecksFuncPtr				= NULL,
 #if (SID_10_DIAG_SESSION_CTRL_HAS_SUB_FUNC==1)
 				.subfuncSupportivityStructGet           = SID_10_getSubFunctSuppStruct
 #else
@@ -33,6 +34,7 @@ UDS_SID_RECORD_t UDS_a_supportedSID_Record[] =
 				.minLen                                 = SID_11_ECU_RESET_MIN_LEN,
 				.handler                                = SID_11_Handler,
 				.hasSubFunc                             = SID_11_ECU_RESET_HAS_SUB_FUNC,
+				.preConditionsChecksFuncPtr				= NULL,
 #if (SID_11_ECU_RESET_HAS_SUB_FUNC==1)
 				.subfuncSupportivityStructGet           = SID_11_getSubFunctSuppStruct
 #else
@@ -44,6 +46,7 @@ UDS_SID_RECORD_t UDS_a_supportedSID_Record[] =
 				.minLen                     = SID_22_READ_DID_MIN_LEN,
 				.handler                    = SID_22_Handler,
 				.hasSubFunc                 = SID_22_READ_DID_HAS_SUB_FUNC,
+				.preConditionsChecksFuncPtr				= NULL,
 #if (SID_22_READ_DID_HAS_SUB_FUNC==1)
 				.subfuncSupportivityStructGet           = SID_22_getSubFunctSuppStruct
 #else 
@@ -55,6 +58,7 @@ UDS_SID_RECORD_t UDS_a_supportedSID_Record[] =
 		       .minLen                     = SID_27_SECURITY_ACCESS_MIN_LEN,
 		       .handler                    = SID_27_Handler,
 		       .hasSubFunc                 = SID_27_SECURITY_ACCESS_HAS_SUB_FUNC,
+			   .preConditionsChecksFuncPtr				= NULL,
 		#if (SID_27_SECURITY_ACCESS_HAS_SUB_FUNC==1)
 		       .subfuncSupportivityStructGet           = SID_27_getSubFunctSuppStruct
 		#else
@@ -66,6 +70,7 @@ UDS_SID_RECORD_t UDS_a_supportedSID_Record[] =
 				.minLen                     = SID_2E_WRITE_DID_MIN_LEN,
 				.handler                    = SID_2E_Handler,
 				.hasSubFunc                 = SID_2E_WRITE_DID_HAS_SUB_FUNC,
+				.preConditionsChecksFuncPtr				= NULL,
 #if (SID_2E_WRITE_DID_HAS_SUB_FUNC==1)
 				.subfuncSupportivityStructGet           = SID_2E_getSubFunctSuppStruct
 #else 
@@ -77,6 +82,7 @@ UDS_SID_RECORD_t UDS_a_supportedSID_Record[] =
 				.minLen                     = SID_31_ROUTINE_CTRL_MIN_LEN,
 				.handler                    = SID_31_Handler,
 				.hasSubFunc                 = SID_31_ROUTINE_CTRL_HAS_SUB_FUNC,
+				.preConditionsChecksFuncPtr				= NULL,
 #if (SID_31_ROUTINE_CTRL_HAS_SUB_FUNC==1)
 				.subfuncSupportivityStructGet           = SID_31_getSubFunctSuppStruct
 #else 
@@ -88,6 +94,7 @@ UDS_SID_RECORD_t UDS_a_supportedSID_Record[] =
 				.minLen                     = SID_34_REQUEST_DOWNLOAD_MIN_LEN,
 				.handler                    = SID_34_Handler,
 				.hasSubFunc                 = SID_34_REQUEST_DOWNLOAD_HAS_SUB_FUNC,
+				.preConditionsChecksFuncPtr				= NULL,
 #if (SID_34_REQUEST_DOWNLOAD_HAS_SUB_FUNC == 1)
 				.subfuncSupportivityStructGet           = SID_34_getSubFunctSuppStruct
 #else
@@ -100,6 +107,7 @@ UDS_SID_RECORD_t UDS_a_supportedSID_Record[] =
 				.minLen                     = SID_36_TRANSFER_DATA_MIN_LEN,
 				.handler                    = SID_36_Handler,
 				.hasSubFunc                 = SID_36_TRANSFER_DATA_HAS_SUB_FUNC,
+				.preConditionsChecksFuncPtr				= NULL,
 #if (SID_36_TRANSFER_DATA_HAS_SUB_FUNC == 1)
 				.subfuncSupportivityStructGet           = SID_36_getSubFunctSuppStruct
 #else
@@ -111,6 +119,7 @@ UDS_SID_RECORD_t UDS_a_supportedSID_Record[] =
 			.minLen                     = SID_37_REQUEST_TRANSFER_EXIT_MIN_LEN,
 			.handler                    = SID_37_Handler,
 			.hasSubFunc                 = SID_37_TRANSFER_DATA_HAS_SUB_FUNC,
+			.preConditionsChecksFuncPtr				= NULL,
 #if (SID_37_TRANSFER_DATA_HAS_SUB_FUNC == 1)
 			.subfuncSupportivityStructGet           = SID_37_getSubFunctSuppStruct
 #else
@@ -122,6 +131,7 @@ UDS_SID_RECORD_t UDS_a_supportedSID_Record[] =
 				.minLen                                 = SID_3E_TESTER_PRESENT_MIN_LEN,
 				.handler                                = SID_3E_Handler,
 				.hasSubFunc                             = SID_3E_TESTER_PRESENT_HAS_SUB_FUNC,
+				.preConditionsChecksFuncPtr				= NULL,
 #if (SID_3E_TESTER_PRESENT_HAS_SUB_FUNC==1)
 				.subfuncSupportivityStructGet           = SID_3E_getSubFunctSuppStruct
 #else

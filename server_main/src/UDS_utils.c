@@ -99,6 +99,16 @@ UDS_Utils_ReturnType modify_flag(UDS_Utils_FLAG flag ,UDS_Utils_ModifyFlag input
 	case UDS_LAST_SECURITY_LEVEL:
 		flags_instance.uds_last_securityLvl = input;
 		break;
+	case BOOTLOADER_UPDATE_REQUEST:
+		if(input == FLAG_TOGGLE)
+		flags_instance.bootLoader_update_request = !(flags_instance.bootLoader_update_request);
+		else
+		{
+			flags_instance.bootLoader_update_request = (input == FLAG_SET)? 1 : 0;
+		}
+		break;
+	case BOOTLOADER_UPDATE_SIZE:
+		flags_instance.bootloader_update_size = input;
 	default:
 		break;
 	}
@@ -474,10 +484,10 @@ UDS_Utils_ReturnType parse_data(uint8_t* data, uint32_t data_length){
 	else if(data[0] == METADATA_SEGMENT_BYTE_CODE && data_length != 7)
 		return PARAMETERS_INVALID;
 
-		uint32_t start_address;
-		uint32_t segment_length;
-		uint16_t crc;
-		uint32_t app_length;
+	uint32_t start_address;
+	uint32_t segment_length;
+	uint16_t crc;
+	uint32_t app_length;
 	/*parse data bytes to respective variables*/
 	if(data[0] != METADATA_SEGMENT_BYTE_CODE){
 	
@@ -509,7 +519,23 @@ else{
 	}else{
 		flash_flashbank_metadata(crc, app_length);
 	}
-
+	if(data[0] != METADATA_SEGMENT_BYTE_CODE)
+	{
+		if(signVerifier_updateHash(data,data_length)==0U)
+			return FLASH_FAILED;
+	}
+	else
+	{
+		if(signVerifier_updateHash(data,7U))
+			return FLASH_FAILED;
+		if(signVerifier_finalizeCheckSignature(&data[8],data_length-8U))
+			return FLASH_FAILED;
+		if(data[7U] == BOOTLOADER_UPDATE_OP_CODE)
+		{
+			/*TODO: check valid size*/
+			modify_flag(BOOTLOADER_UPDATE_REQUEST,FLAG_SET);
+		}
+	}
 	return FLASH_OK;
 }
 
