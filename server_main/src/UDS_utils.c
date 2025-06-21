@@ -99,6 +99,7 @@ UDS_Utils_ReturnType modify_flag(UDS_Utils_FLAG flag ,UDS_Utils_ModifyFlag input
 	case UDS_LAST_SECURITY_LEVEL:
 		flags_instance.uds_last_securityLvl = input;
 		break;
+#ifdef BOOTLOADER_USE_BOOTLOADER_UPDATER
 	case BOOTLOADER_UPDATE_REQUEST:
 		if(input == FLAG_TOGGLE)
 		flags_instance.bootLoader_update_request = !(flags_instance.bootLoader_update_request);
@@ -109,6 +110,8 @@ UDS_Utils_ReturnType modify_flag(UDS_Utils_FLAG flag ,UDS_Utils_ModifyFlag input
 		break;
 	case BOOTLOADER_UPDATE_SIZE:
 		flags_instance.bootloader_update_size = input;
+		break;
+#endif
 	default:
 		break;
 	}
@@ -147,6 +150,12 @@ uint8_t read_flags(UDS_Utils_FLAG flag){
 		return flags_instance.flashbank_B_Erased;
 	case UDS_LAST_SECURITY_LEVEL:
 		return flags_instance.uds_last_securityLvl;
+#ifdef BOOTLOADER_USE_BOOTLOADER_UPDATER
+	case BOOTLOADER_UPDATE_REQUEST:
+		return flags_instance.bootLoader_update_request;
+	case BOOTLOADER_UPDATE_SIZE:
+		return flags_instance.bootloader_update_size;
+#endif
 	default:
 		return -1; //TODO: return something
 	}
@@ -481,8 +490,8 @@ UDS_Utils_ReturnType parse_data(uint8_t* data, uint32_t data_length){
 	if((data[0] == ADD_SEGMENT_BYTE_CODE ) && data_length <= 9 )
 	return PARAMETERS_INVALID;
 
-	else if(data[0] == METADATA_SEGMENT_BYTE_CODE && data_length != 7)
-		return PARAMETERS_INVALID;
+//	else if(data[0] == METADATA_SEGMENT_BYTE_CODE && data_length != 7)
+//		return PARAMETERS_INVALID;
 
 	uint32_t start_address;
 	uint32_t segment_length;
@@ -519,25 +528,29 @@ else{
 	}else{
 		flash_flashbank_metadata(crc, app_length);
 	}
+#ifdef BOOTLOADER_USE_VERIFY_SIGNATURE
 	if(data[0] != METADATA_SEGMENT_BYTE_CODE)
 	{
-		if(signVerifier_updateHash(data,data_length)==0U)
-			return FLASH_FAILED;
+		signVerifier_updateHash(data,data_length);
 	}
 	else
 	{
-		if(signVerifier_updateHash(data,7U))
-			return FLASH_FAILED;
-		if(signVerifier_finalizeCheckSignature(&data[8],data_length-8U))
-			return FLASH_FAILED;
-		if(data[7U] == BOOTLOADER_UPDATE_OP_CODE)
+		signVerifier_updateHash(data,7U);
+		if(signVerifier_finalizeCheckSignature(&(data[7]),data_length-7U) == 0)
 		{
-			/*TODO: check valid size*/
-			modify_flag(BOOTLOADER_UPDATE_REQUEST,FLAG_SET);
-			app_length = (data[3] << 24) | (data[4] << 16) | (data[5] << 8) | data[6];
-			modify_flag(BOOTLOADER_UPDATE_SIZE,app_length);
+			return FLASH_FAILED;
 		}
 	}
+#endif
+#ifdef BOOTLOADER_USE_BOOTLOADER_UPDATER
+	if(data[7U] == BOOTLOADER_UPDATE_OP_CODE && data[0]==METADATA_SEGMENT_BYTE_CODE)
+	{
+		modify_flag(BOOTLOADER_UPDATE_REQUEST,FLAG_SET);
+		app_length = (data[3] << 24) | (data[4] << 16) | (data[5] << 8) | data[6];
+		modify_flag(BOOTLOADER_UPDATE_SIZE,app_length);
+	}
+#endif
+	func();
 	return FLASH_OK;
 }
 
